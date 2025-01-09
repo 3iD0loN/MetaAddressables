@@ -3,7 +3,9 @@
   "displayName": "Meta Addressables",
   "version": "0.0.1",
   "unity": "6000.0",
-  "description": "",
+  "dependencies": {
+    "com.usp.metafileextension": "0.0.1"
+  },
   "category": "Framework",
   "type": "library"
 }
