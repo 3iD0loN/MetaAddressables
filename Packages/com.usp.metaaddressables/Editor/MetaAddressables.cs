@@ -87,10 +87,20 @@ namespace USP.MetaAddressables
             // or there is no prexisting one that matches.
             if (!string.IsNullOrEmpty(groupData.Guid))
             {
-                s_groupsByGuids.TryGetValue(groupData.Guid, out group);
-                return group;
+                // Attempt to find a group associated with the guid.
+                // If there was a group found that was associated with the guid, then:
+                if (s_groupsByGuids.TryGetValue(groupData.Guid, out group))
+                {
+                    // Return the found group.
+                    return group;
+                }
+
+                // Otherwise, there was no group found associated with the guid.
+
+                // Attempt to find another existing group or create a new group.
             }
 
+            // Get the hash code for the group.
             int hash = groupData.GetHashCode();
 
             bool found = s_groupsByHash.TryGetValue(hash,
