@@ -14,6 +14,7 @@ using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using static UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema;
 
 using USP.MetaFileExtension;
+using static USP.MetaAddressables.MetaAddressables;
 
 namespace USP.MetaAddressables
 {
@@ -156,6 +157,13 @@ namespace USP.MetaAddressables
             userData.Group = groupData;
 
             Generate(group, userData.Asset);
+        }
+
+        public static void Clear(string assetFilePath)
+        {
+            AssetImporter assetImporter = AssetImporter.GetAtPath(assetFilePath);
+
+            MetaFile.Clear(assetImporter, UserDataKey);
         }
 
         public static void Write(string assetFilePath, UserData userData)
