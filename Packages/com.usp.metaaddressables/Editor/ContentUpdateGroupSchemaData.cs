@@ -21,7 +21,7 @@ namespace USP.MetaAddressables
     {
         #region Types
         [Serializable]
-        public class ContentUpdateGroupSchemaData : IGroupSchemaData
+        public class ContentUpdateGroupSchemaData : GroupSchemaData
         {
             #region Fields
             [SerializeField]

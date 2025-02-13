@@ -21,7 +21,7 @@ namespace USP.MetaAddressables
     {
         #region Types
         [Serializable]
-        public class BundledAssetGroupSchemaData : IGroupSchemaData
+        public class BundledAssetGroupSchemaData : GroupSchemaData
         {
             #region Fields
             [SerializeField]
