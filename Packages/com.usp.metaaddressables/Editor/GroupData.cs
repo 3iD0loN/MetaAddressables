@@ -14,6 +14,7 @@ using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using static UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema;
 
 using USP.MetaFileExtension;
+using static USP.MetaAddressables.MetaAddressables;
 
 namespace USP.MetaAddressables
 {
@@ -24,6 +25,13 @@ namespace USP.MetaAddressables
         public class GroupData
         {
             #region Static Methods
+            public static AddressableAssetGroup Create(AddressableAssetSettings settings, GroupData groupData)
+            {
+                List<AddressableAssetGroupSchema> schemas = Create(groupData.SchemaData);
+
+                return settings.CreateGroup(groupData.Name, false, groupData.IsReadOnly, false, schemas);
+            }
+
             private static GroupSchemaData Create(AddressableAssetGroupSchema groupSchema)
             {
                 if (groupSchema is BundledAssetGroupSchema bundledAssetGroupScema)
@@ -123,9 +131,11 @@ namespace USP.MetaAddressables
             #endregion
 
             #region Properties
+            public string Name { get; }
+
             public string Guid => _guid;
 
-            public bool ReadOnly => _readOnly;
+            public bool IsReadOnly => _readOnly;
 
             public List<GroupSchemaData> SchemaData => _schemaData;
             #endregion
@@ -133,22 +143,24 @@ namespace USP.MetaAddressables
             #region Methods
             #region Constructors
             public GroupData(AddressableAssetGroupTemplate groupTemplate) :
-                this(string.Empty, false, groupTemplate.SchemaObjects)
+                this(groupTemplate.Name, string.Empty, false, groupTemplate.SchemaObjects)
             {
             }
 
             public GroupData(AddressableAssetGroup group) :
-                this(group.Guid, group.ReadOnly, group.Schemas)
+                this(group.Name, group.Guid, group.ReadOnly, group.Schemas)
             {
             }
 
-            private GroupData(string guid, bool readOnly, List<AddressableAssetGroupSchema> groupSchemas) :
-                this(guid, readOnly, Create(groupSchemas))
+            private GroupData(string name, string guid, bool readOnly, List<AddressableAssetGroupSchema> groupSchemas) :
+                this(name, guid, readOnly, Create(groupSchemas))
             {
             }
 
-            private GroupData(string guid, bool readOnly, List<GroupSchemaData> groupSchemaData)
+            private GroupData(string name, string guid, bool readOnly, List<GroupSchemaData> groupSchemaData)
             {
+                Name = name;
+
                 _guid = guid;
 
                 _readOnly = readOnly;
@@ -168,11 +180,6 @@ namespace USP.MetaAddressables
                 }
 
                 return result;
-            }
-
-            public List<AddressableAssetGroupSchema> CreateSchemas()
-            {
-                return Create(SchemaData);
             }
             #endregion
         }

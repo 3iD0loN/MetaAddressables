@@ -84,7 +84,7 @@ namespace USP.MetaAddressables
             AddressableAssetGroup group;
 
             // If there is no group GUID assigned to the userdata,
-            // then either we haven't found a prexisting one that matches,
+            // then either we haven't found a prexisting group that matches,
             // or there is no prexisting one that matches.
             if (!string.IsNullOrEmpty(groupData.Guid))
             {
@@ -92,7 +92,7 @@ namespace USP.MetaAddressables
                 // If there was a group found that was associated with the guid, then:
                 if (s_groupsByGuids.TryGetValue(groupData.Guid, out group))
                 {
-                    // Return the found group.
+                    // Return the found group. Do nothing else.
                     return group;
                 }
 
@@ -104,15 +104,17 @@ namespace USP.MetaAddressables
             // Get the hash code for the group.
             int hash = groupData.GetHashCode();
 
+            // Attempt to find a list of groups that are associated with the group data.
             bool found = s_groupsByHash.TryGetValue(hash,
                 out List<AddressableAssetGroup> groupList);
 
             // If a list of groups is associated with the hash, then:
             if (found)
             {
+                // Get the first group in the list.
                 group = groupList.First();
 
-                // Create new group data based off of this group.
+                // Create a new group data instance based off of the group.
                 groupData = new GroupData(group);
 
                 return group;
@@ -127,8 +129,7 @@ namespace USP.MetaAddressables
             s_groupsByHash.Add(hash, groupList);
 
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            List<AddressableAssetGroupSchema> schemas = groupData.CreateSchemas();
-            group = settings.CreateGroup("New Group", false, groupData.ReadOnly, false, schemas);
+            group = GroupData.Create(settings, groupData);
 
             groupList.Add(group);
 
