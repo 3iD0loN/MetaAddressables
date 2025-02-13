@@ -24,7 +24,7 @@ namespace USP.MetaAddressables
         public class GroupData
         {
             #region Static Methods
-            private static GroupSchemaData CreateSchemaData(AddressableAssetGroupSchema groupSchema)
+            private static GroupSchemaData Create(AddressableAssetGroupSchema groupSchema)
             {
                 if (groupSchema is BundledAssetGroupSchema bundledAssetGroupScema)
                 {
@@ -38,7 +38,19 @@ namespace USP.MetaAddressables
                 return null;
             }
 
-            private static AddressableAssetGroupSchema CreateSchema(GroupSchemaData groupSchemaData)
+            private static List<GroupSchemaData> Create(List<AddressableAssetGroupSchema> groupSchemas)
+            {
+                var result = new List<GroupSchemaData>(groupSchemas.Count);
+                foreach (AddressableAssetGroupSchema groupSchema in groupSchemas)
+                {
+                    var data = Create(groupSchema);
+                    result.Add(data);
+                }
+
+                return result;
+            }
+
+            private static AddressableAssetGroupSchema Create(GroupSchemaData groupSchemaData)
             {
                 if (groupSchemaData is BundledAssetGroupSchemaData bundledAssetGroupScema)
                 {
@@ -85,6 +97,18 @@ namespace USP.MetaAddressables
 
                 return default;
             }
+
+            private static List<AddressableAssetGroupSchema> Create(List<GroupSchemaData> groupSchemaData)
+            {
+                var result = new List<AddressableAssetGroupSchema>(groupSchemaData.Count);
+                foreach (GroupSchemaData schemaData in groupSchemaData)
+                {
+                    AddressableAssetGroupSchema schema = Create(schemaData);
+                    result.Add(schema);
+                }
+
+                return result;
+            }
             #endregion
 
             #region Fields
@@ -118,18 +142,18 @@ namespace USP.MetaAddressables
             {
             }
 
-            private GroupData(string guid, bool readOnly, List<AddressableAssetGroupSchema> groupSchemas)
+            private GroupData(string guid, bool readOnly, List<AddressableAssetGroupSchema> groupSchemas) :
+                this(guid, readOnly, Create(groupSchemas))
+            {
+            }
+
+            private GroupData(string guid, bool readOnly, List<GroupSchemaData> groupSchemaData)
             {
                 _guid = guid;
 
                 _readOnly = readOnly;
 
-                _schemaData = new List<GroupSchemaData>();
-                foreach (AddressableAssetGroupSchema groupSchema in groupSchemas)
-                {
-                    var data = CreateSchemaData(groupSchema);
-                    _schemaData.Add(data);
-                }
+                _schemaData = groupSchemaData;
             }
             #endregion
 
@@ -148,14 +172,7 @@ namespace USP.MetaAddressables
 
             public List<AddressableAssetGroupSchema> CreateSchemas()
             {
-                var result = new List<AddressableAssetGroupSchema>(SchemaData.Count);
-                foreach (GroupSchemaData schemaData in SchemaData)
-                {
-                    AddressableAssetGroupSchema schema = CreateSchema(schemaData);
-                    result.Add(schema);
-                }
-
-                return result;
+                return Create(SchemaData);
             }
             #endregion
         }
