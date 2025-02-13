@@ -37,11 +37,17 @@ namespace USP.MetaAddressables
         {
             factory = new Factory();
 
-            s_groupsByGuids = new Dictionary<string, AddressableAssetGroup>();
-
-            s_groupsByHash = new Dictionary<int, List<AddressableAssetGroup>>();
-
             var settings = AddressableAssetSettingsDefaultObject.Settings;
+
+            if (settings == null)
+            {
+                // NOTE: should throw an error?
+
+                return;
+            }
+
+            s_groupsByGuids = new Dictionary<string, AddressableAssetGroup>(settings.groups.Count);
+            s_groupsByHash = new Dictionary<int, List<AddressableAssetGroup>>(settings.groups.Count);
 
             foreach (var group in settings.groups)
             {
@@ -52,17 +58,29 @@ namespace USP.MetaAddressables
 
                 s_groupsByGuids.Add(group.Guid, group);
 
+                // Pack the group into a group data...
                 var groupData = new GroupData(group);
+
+                // so that we can generate a hash that is unique to its properties.
                 int hash = groupData.GetHashCode();
 
+                // Attempt to get the list of Addressable groups that are associated with the hash.
+                // (More than one group might have the same property values, so their property hashes might collide).
                 bool found = s_groupsByHash.TryGetValue(hash, out List<AddressableAssetGroup> groupList);
 
+                // If there is no list of groups associated with the hash, then: 
                 if (!found)
                 {
+                    // Create a new list of groups.
                     groupList = new List<AddressableAssetGroup>();
+
+                    // Associate the new list of groups with the property hash.
                     s_groupsByHash.Add(hash, groupList);
                 }
 
+                // There exists a list of groups associated with the property hash.
+
+                // Add the group to the list.
                 groupList.Add(group);
             }
         }
@@ -79,7 +97,8 @@ namespace USP.MetaAddressables
             return MetaFile.Read(assetImporter, UserDataKey, factory.Create);
         }
 
-        public static AddressableAssetGroup Generate(ref GroupData groupData)
+        private static AddressableAssetGroup Generate(AddressableAssetSettings settings,
+            ref GroupData groupData)
         {
             AddressableAssetGroup group;
 
@@ -128,7 +147,6 @@ namespace USP.MetaAddressables
             // Associate the list with the hash. 
             s_groupsByHash.Add(hash, groupList);
 
-            var settings = AddressableAssetSettingsDefaultObject.Settings;
             group = GroupData.Create(settings, groupData);
 
             groupList.Add(group);
@@ -136,28 +154,15 @@ namespace USP.MetaAddressables
             return group;
         }
 
-        public static AddressableAssetEntry Generate(AddressableAssetGroup group, AssetData assetData)
+        public static void Generate(UserData userData)
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
 
-            AddressableAssetEntry entry = settings.CreateOrMoveEntry(assetData.Guid, group);
-            entry.SetAddress(assetData.Address);
-
-            foreach (var label in assetData.Labels)
-            {
-                entry.labels.Add(label);
-            }
-
-            return entry;
-        }
-
-        public static void Generate(UserData userData)
-        {
             var groupData = userData.Group;
-            AddressableAssetGroup group = Generate(ref groupData);
+            AddressableAssetGroup group = Generate(settings, ref groupData);
             userData.Group = groupData;
 
-            Generate(group, userData.Asset);
+            AssetData.Create(settings, group, userData.Asset);
         }
 
         public static void Clear(string assetFilePath)
