@@ -1,20 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using UnityEngine;
 
-using UnityEditor;
-using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
-using UnityEngine.ResourceManagement.ResourceProviders;
-using UnityEngine.ResourceManagement.Util;
-using UnityEditor.AddressableAssets.Settings.GroupSchemas;
-using static UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema;
 
 using USP.MetaFileExtension;
-
 namespace USP.MetaAddressables
 {
     public static partial class MetaAddressables
@@ -27,6 +19,20 @@ namespace USP.MetaAddressables
             public static string SimplifyAddress(string address)
             {
                 return Path.GetFileNameWithoutExtension(address);
+            }
+
+            public static AddressableAssetEntry Create(AddressableAssetSettings settings,
+                AddressableAssetGroup group, AssetData assetData)
+            {
+                AddressableAssetEntry entry = settings.CreateOrMoveEntry(assetData.Guid, group);
+                entry.SetAddress(assetData.Address);
+
+                foreach (var label in assetData.Labels)
+                {
+                    entry.labels.Add(label);
+                }
+
+                return entry;
             }
             #endregion
 
