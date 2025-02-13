@@ -21,7 +21,7 @@ namespace USP.MetaAddressables
     {
         #region Types
         [Serializable]
-        public class AssetData
+        public class AssetData : ISerializationCallbackReceiver
         {
             #region Static Methods
             public static string SimplifyAddress(string address)
@@ -41,7 +41,7 @@ namespace USP.MetaAddressables
             private bool _readOnly;
 
             [SerializeField]
-            private List<string> _labels;
+            private string[] _labels;
 
             [SerializeField]
             private bool _flaggedDuringContentUpdateRestriction = false;
@@ -80,16 +80,10 @@ namespace USP.MetaAddressables
                 }
             }
 
-            public List<string> Labels
+            public HashSet<string> Labels
             {
-                get
-                {
-                    return _labels;
-                }
-                set
-                {
-                    _labels = value;
-                }
+                get;
+                private set;
             }
 
             public bool FlaggedDuringContentUpdateRestriction
@@ -102,6 +96,7 @@ namespace USP.MetaAddressables
             #endregion
 
             #region Methods
+            #region Constructors
             public AssetData(string guid, string address, bool readOnly)
             {
                 _guid = guid;
@@ -110,7 +105,8 @@ namespace USP.MetaAddressables
 
                 _readOnly = readOnly;
 
-                _labels = new List<string>();
+                _labels = new string[0];
+                Labels = new HashSet<string>();
             }
 
             public AssetData(AddressableAssetEntry entry)
@@ -121,8 +117,22 @@ namespace USP.MetaAddressables
 
                 _readOnly = entry.ReadOnly;
 
-                _labels = entry.labels.ToList();
+                _labels = new string[0];
+                Labels = entry.labels;
             }
+            #endregion
+
+            #region ISerializationCallbackReceiver
+            void ISerializationCallbackReceiver.OnBeforeSerialize()
+            {
+                Labels.CopyTo(_labels);
+            }
+
+            void ISerializationCallbackReceiver.OnAfterDeserialize()
+            {
+                Labels = new HashSet<string>(_labels);
+            }
+            #endregion
             #endregion
         }
         #endregion
