@@ -1,20 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 using UnityEngine;
 
-using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
-using UnityEngine.ResourceManagement.ResourceProviders;
-using UnityEngine.ResourceManagement.Util;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
-using static UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema;
 
-using USP.MetaFileExtension;
-using static USP.MetaAddressables.MetaAddressables;
 
 namespace USP.MetaAddressables
 {
@@ -22,9 +14,10 @@ namespace USP.MetaAddressables
     {
         #region Types
         [Serializable]
-        public class GroupData
+        public class GroupData : IEqualityComparer<GroupData>
         {
             #region Static Methods
+            #region Create
             public static AddressableAssetGroup Create(AddressableAssetSettings settings, GroupData groupData)
             {
                 List<AddressableAssetGroupSchema> schemas = Create(groupData.SchemaData);
@@ -119,6 +112,32 @@ namespace USP.MetaAddressables
             }
             #endregion
 
+            #region Equality operators
+            public static bool operator ==(GroupData leftHand, GroupData rightHand)
+            {
+                var lhs = (object)leftHand;
+                var rhs = (object)rightHand;
+
+                if (lhs == rhs)
+                {
+                    return true;
+                }
+
+                if (rhs == null || lhs == null)
+                {
+                    return false;
+                }
+
+                return leftHand.GetHashCode() == rightHand.GetHashCode();
+            }
+
+            public static bool operator !=(GroupData lhs, GroupData rhs)
+            {
+                return !(lhs == rhs);
+            }
+            #endregion
+            #endregion
+
             #region Fields
             [SerializeField]
             private string _guid;
@@ -180,6 +199,31 @@ namespace USP.MetaAddressables
                 }
 
                 return result;
+            }
+
+            public override bool Equals(object other)
+            {
+                if (other is not GroupData group)
+                {
+                    return false;
+                }
+
+                return this == group;
+            }
+
+            public int GetHashCode(GroupData obj)
+            {
+                return obj.GetHashCode();
+            }
+
+            public bool Equals(GroupData lhs, GroupData rhs)
+            {
+                return lhs == rhs;
+            }
+
+            public override string ToString()
+            {
+                return Name;
             }
             #endregion
         }
