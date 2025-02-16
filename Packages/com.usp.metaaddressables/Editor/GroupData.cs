@@ -15,65 +15,6 @@ namespace USP.MetaAddressables
     public static partial class MetaAddressables
     {
         #region Types
-        public class GenericComparer<T> : IEqualityComparer<T>
-        {
-            public Func<T, T, bool> Equality;
-
-            public GenericComparer(Func<T, T, bool> equality)
-            {
-                Equality = equality;
-            }
-
-            public int GetHashCode(T obj)
-            {
-                return obj.GetHashCode();
-            }
-
-            public virtual bool Equals(T lhs, T rhs)
-            {
-                return Equality != null ? Equality.Invoke(lhs, rhs) : false;
-            }
-        }
-
-        public static class ObjectComparer
-        {
-            public static bool CompareHash(object leftHand, object rightHand)
-            {
-                if (leftHand == rightHand)
-                {
-                    return true;
-                }
-
-                if (rightHand == null || leftHand == null)
-                {
-                    return false;
-                }
-
-                return leftHand.GetHashCode() == rightHand.GetHashCode();
-            }
-        }
-
-        public static class StringComparer
-        {
-            public static bool CompareOrdinal(string leftHand, string rightHand)
-            {
-                var lhs = (object)leftHand;
-                var rhs = (object)rightHand;
-
-                if (lhs == rhs)
-                {
-                    return true;
-                }
-
-                if (rhs == null || lhs == null)
-                {
-                    return false;
-                }
-
-                return string.Compare(leftHand, rightHand, StringComparison.Ordinal) == 0;
-            }
-        }    
-
         [Serializable]
         public class GroupData : IEqualityComparer<GroupData>, ISerializationCallbackReceiver
         {
