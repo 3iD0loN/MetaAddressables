@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
+using static UnityEditor.AddressableAssets.Build.Layout.BuildLayout;
+using static USP.MetaAddressables.MetaAddressables;
 
 
 namespace USP.MetaAddressables
@@ -13,9 +15,140 @@ namespace USP.MetaAddressables
     public static partial class MetaAddressables
     {
         #region Types
-        [Serializable]
-        public class GroupData : IEqualityComparer<GroupData>
+        public class GenericComparer<T> : IEqualityComparer<T>
         {
+            public Func<T, T, bool> Equality;
+
+            public GenericComparer(Func<T, T, bool> equality)
+            {
+                Equality = equality;
+            }
+
+            public int GetHashCode(T obj)
+            {
+                return obj.GetHashCode();
+            }
+
+            public virtual bool Equals(T lhs, T rhs)
+            {
+                return Equality != null ? Equality.Invoke(lhs, rhs) : false;
+            }
+        }
+
+        public static class ObjectComparer
+        {
+            public static bool CompareHash(object leftHand, object rightHand)
+            {
+                if (leftHand == rightHand)
+                {
+                    return true;
+                }
+
+                if (rightHand == null || leftHand == null)
+                {
+                    return false;
+                }
+
+                return leftHand.GetHashCode() == rightHand.GetHashCode();
+            }
+        }
+
+        public static class StringComparer
+        {
+            public static bool CompareOrdinal(string leftHand, string rightHand)
+            {
+                var lhs = (object)leftHand;
+                var rhs = (object)rightHand;
+
+                if (lhs == rhs)
+                {
+                    return true;
+                }
+
+                if (rhs == null || lhs == null)
+                {
+                    return false;
+                }
+
+                return string.Compare(leftHand, rightHand, StringComparison.Ordinal) == 0;
+            }
+        }    
+
+        [Serializable]
+        public class GroupData : IEqualityComparer<GroupData>, ISerializationCallbackReceiver
+        {
+            #region Types
+            public static class Comparer
+            {
+                #region Static Methods
+                public static bool CompareName(GroupData leftHand, GroupData rightHand)
+                {
+                    var lhs = (object)leftHand;
+                    var rhs = (object)rightHand;
+
+                    if (lhs == rhs)
+                    {
+                        return true;
+                    }
+
+                    if (rhs == null || lhs == null)
+                    {
+                        return false;
+                    }
+
+                    return StringComparer.CompareOrdinal(leftHand.Name, rightHand.Name);
+                }
+
+                public static bool CompareNameAndHash(GroupData leftHand, GroupData rightHand)
+                {
+                    var lhs = (object)leftHand;
+                    var rhs = (object)rightHand;
+
+                    if (lhs == rhs)
+                    {
+                        return true;
+                    }
+
+                    if (rhs == null || lhs == null)
+                    {
+                        return false;
+                    }
+
+                    return StringComparer.CompareOrdinal(leftHand.Name, rightHand.Name) &&
+                        ObjectComparer.CompareHash(leftHand, rightHand);
+                }
+
+                public static bool CompareGuid(GroupData leftHand, GroupData rightHand)
+                {
+                    var lhs = (object)leftHand;
+                    var rhs = (object)rightHand;
+
+                    if (lhs == rhs)
+                    {
+                        return true;
+                    }
+
+                    if (rhs == null || lhs == null)
+                    {
+                        return false;
+                    }
+
+                    return StringComparer.CompareOrdinal(leftHand.Guid, rightHand.Guid);
+                }
+                #endregion
+
+                #region Static Fields
+                public static readonly GenericComparer<GroupData> ByName = new GenericComparer<GroupData>(CompareName);
+
+                public static readonly GenericComparer<GroupData> ByHash = new GenericComparer<GroupData>(ObjectComparer.CompareHash);
+
+                public static readonly GenericComparer<GroupData> ByNameAndHash = new GenericComparer<GroupData>(CompareNameAndHash);
+
+                public static readonly GenericComparer<GroupData> ByGuid = new GenericComparer<GroupData>(CompareGuid);
+                #endregion
+            }
+            #endregion
+
             #region Static Methods
             #region Create
             public static AddressableAssetGroup Create(AddressableAssetSettings settings, GroupData groupData)
@@ -39,13 +172,13 @@ namespace USP.MetaAddressables
                 return null;
             }
 
-            private static List<GroupSchemaData> Create(List<AddressableAssetGroupSchema> groupSchemas)
+            private static Dictionary<Type, GroupSchemaData> Create(List<AddressableAssetGroupSchema> groupSchemas)
             {
-                var result = new List<GroupSchemaData>(groupSchemas.Count);
+                var result = new Dictionary<Type, GroupSchemaData>(groupSchemas.Count);
                 foreach (AddressableAssetGroupSchema groupSchema in groupSchemas)
                 {
                     var data = Create(groupSchema);
-                    result.Add(data);
+                    result.Add(data.GetType(), data);
                 }
 
                 return result;
@@ -99,10 +232,10 @@ namespace USP.MetaAddressables
                 return default;
             }
 
-            private static List<AddressableAssetGroupSchema> Create(List<GroupSchemaData> groupSchemaData)
+            private static List<AddressableAssetGroupSchema> Create(Dictionary<Type, GroupSchemaData> groupSchemaData)
             {
                 var result = new List<AddressableAssetGroupSchema>(groupSchemaData.Count);
-                foreach (GroupSchemaData schemaData in groupSchemaData)
+                foreach (GroupSchemaData schemaData in groupSchemaData.Values)
                 {
                     AddressableAssetGroupSchema schema = Create(schemaData);
                     result.Add(schema);
@@ -115,20 +248,7 @@ namespace USP.MetaAddressables
             #region Equality operators
             public static bool operator ==(GroupData leftHand, GroupData rightHand)
             {
-                var lhs = (object)leftHand;
-                var rhs = (object)rightHand;
-
-                if (lhs == rhs)
-                {
-                    return true;
-                }
-
-                if (rhs == null || lhs == null)
-                {
-                    return false;
-                }
-
-                return leftHand.GetHashCode() == rightHand.GetHashCode();
+                return ObjectComparer.CompareHash(leftHand, rightHand);
             }
 
             public static bool operator !=(GroupData lhs, GroupData rhs)
@@ -146,7 +266,7 @@ namespace USP.MetaAddressables
             private bool _readOnly;
 
             [SerializeReference]
-            private List<GroupSchemaData> _schemaData;
+            private GroupSchemaData[] _schemaData;
             #endregion
 
             #region Properties
@@ -156,7 +276,11 @@ namespace USP.MetaAddressables
 
             public bool IsReadOnly => _readOnly;
 
-            public List<GroupSchemaData> SchemaData => _schemaData;
+            public Dictionary<Type, GroupSchemaData> SchemaData
+            {
+                get;
+                private set;
+            }
             #endregion
 
             #region Methods
@@ -176,7 +300,7 @@ namespace USP.MetaAddressables
             {
             }
 
-            private GroupData(string name, string guid, bool readOnly, List<GroupSchemaData> groupSchemaData)
+            private GroupData(string name, string guid, bool readOnly, Dictionary<Type, GroupSchemaData> groupSchemaData)
             {
                 Name = name;
 
@@ -184,7 +308,26 @@ namespace USP.MetaAddressables
 
                 _readOnly = readOnly;
 
-                _schemaData = groupSchemaData;
+                _schemaData = new GroupSchemaData[0];
+                SchemaData = groupSchemaData;
+            }
+            #endregion
+
+            #region ISerializationCallbackReceiver
+            void ISerializationCallbackReceiver.OnBeforeSerialize()
+            {
+                SchemaData.Values.CopyTo(_schemaData, 0);
+            }
+
+            void ISerializationCallbackReceiver.OnAfterDeserialize()
+            {
+                var result = new Dictionary<Type, GroupSchemaData>(_schemaData.Length);
+                foreach (GroupSchemaData groupSchema in _schemaData)
+                {
+                    result.Add(groupSchema.GetType(), groupSchema);
+                }
+
+                SchemaData = result;
             }
             #endregion
 
@@ -192,7 +335,7 @@ namespace USP.MetaAddressables
             {
                 int result = _readOnly.GetHashCode();
 
-                foreach (var schema in _schemaData)
+                foreach (var schema in SchemaData)
                 {
                     int hash = schema.GetHashCode();
                     result = result * 31 ^ hash;
@@ -208,7 +351,7 @@ namespace USP.MetaAddressables
                     return false;
                 }
 
-                return this == group;
+                return Equals(this, group);
             }
 
             public int GetHashCode(GroupData obj)
@@ -224,6 +367,20 @@ namespace USP.MetaAddressables
             public override string ToString()
             {
                 return Name;
+            }
+
+            public T GetSchemaData<T>() 
+                where T : GroupSchemaData
+            {
+                var type = typeof(T);
+                bool found = SchemaData.TryGetValue(type, out GroupSchemaData value);
+
+                if (found && value is T schemaData)
+                {
+                    return schemaData;
+                }
+
+                return default;
             }
             #endregion
         }
