@@ -6,7 +6,6 @@ using UnityEngine;
 
 using UnityEditor.AddressableAssets.Settings;
 
-using USP.MetaFileExtension;
 namespace USP.MetaAddressables
 {
     public static partial class MetaAddressables
