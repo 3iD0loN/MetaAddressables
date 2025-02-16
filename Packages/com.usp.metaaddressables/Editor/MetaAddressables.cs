@@ -18,25 +18,17 @@ using static USP.MetaAddressables.MetaAddressables;
 
 namespace USP.MetaAddressables
 {
-    public static partial class MetaAddressables
+    public static class AddressablesGroupLookup
     {
-        #region Constants
-        private const string UserDataKey = "MetaAddressables";
-        #endregion
+        #region Static Properties
+        public static Dictionary<string, AddressableAssetGroup> GroupsByGuids { get; }
 
-        #region Static Fields
-        public static readonly Factory factory;
-
-        private static Dictionary<string, AddressableAssetGroup> s_groupsByGuids;
-
-        private static Dictionary<int, List<AddressableAssetGroup>> s_groupsByHash;
+        public static Dictionary<int, List<AddressableAssetGroup>> GroupsByHash { get; }
         #endregion
 
         #region Static Methods
-        static MetaAddressables()
+        static AddressablesGroupLookup()
         {
-            factory = new Factory();
-
             var settings = AddressableAssetSettingsDefaultObject.Settings;
 
             if (settings == null)
@@ -46,8 +38,8 @@ namespace USP.MetaAddressables
                 return;
             }
 
-            s_groupsByGuids = new Dictionary<string, AddressableAssetGroup>(settings.groups.Count);
-            s_groupsByHash = new Dictionary<int, List<AddressableAssetGroup>>(settings.groups.Count);
+            GroupsByGuids = new Dictionary<string, AddressableAssetGroup>(settings.groups.Count);
+            GroupsByHash = new Dictionary<int, List<AddressableAssetGroup>>(settings.groups.Count);
 
             foreach (var group in settings.groups)
             {
@@ -56,7 +48,7 @@ namespace USP.MetaAddressables
                     continue;
                 }
 
-                s_groupsByGuids.Add(group.Guid, group);
+                GroupsByGuids.Add(group.Guid, group);
 
                 // Pack the group into a group data...
                 var groupData = new GroupData(group);
@@ -66,7 +58,7 @@ namespace USP.MetaAddressables
 
                 // Attempt to get the list of Addressable groups that are associated with the hash.
                 // (More than one group might have the same property values, so their property hashes might collide).
-                bool found = s_groupsByHash.TryGetValue(hash, out List<AddressableAssetGroup> groupList);
+                bool found = GroupsByHash.TryGetValue(hash, out List<AddressableAssetGroup> groupList);
 
                 // If there is no list of groups associated with the hash, then: 
                 if (!found)
@@ -75,7 +67,7 @@ namespace USP.MetaAddressables
                     groupList = new List<AddressableAssetGroup>();
 
                     // Associate the new list of groups with the property hash.
-                    s_groupsByHash.Add(hash, groupList);
+                    GroupsByHash.Add(hash, groupList);
                 }
 
                 // There exists a list of groups associated with the property hash.
@@ -83,6 +75,24 @@ namespace USP.MetaAddressables
                 // Add the group to the list.
                 groupList.Add(group);
             }
+        }
+        #endregion
+    }
+
+    public static partial class MetaAddressables
+    {
+        #region Constants
+        private const string UserDataKey = "MetaAddressables";
+        #endregion
+
+        #region Static Fields
+        public static readonly Factory factory;
+        #endregion
+
+        #region Static Methods
+        static MetaAddressables()
+        {
+            factory = new Factory();
         }
 
         public static UserData Read(string assetFilePath)
@@ -109,7 +119,7 @@ namespace USP.MetaAddressables
             {
                 // Attempt to find a group associated with the guid.
                 // If there was a group found that was associated with the guid, then:
-                if (s_groupsByGuids.TryGetValue(groupData.Guid, out group))
+                if (AddressablesGroupLookup.GroupsByGuids.TryGetValue(groupData.Guid, out group))
                 {
                     // Return the found group. Do nothing else.
                     return group;
@@ -124,7 +134,7 @@ namespace USP.MetaAddressables
             int hash = groupData.GetHashCode();
 
             // Attempt to find a list of groups that are associated with the group data.
-            bool found = s_groupsByHash.TryGetValue(hash,
+            bool found = AddressablesGroupLookup.GroupsByHash.TryGetValue(hash,
                 out List<AddressableAssetGroup> groupList);
 
             // If a list of groups is associated with the hash, then:
@@ -145,7 +155,7 @@ namespace USP.MetaAddressables
             groupList = new List<AddressableAssetGroup>();
 
             // Associate the list with the hash. 
-            s_groupsByHash.Add(hash, groupList);
+            AddressablesGroupLookup.GroupsByHash.Add(hash, groupList);
 
             group = GroupData.Create(settings, groupData);
 
