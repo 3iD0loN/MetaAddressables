@@ -25,20 +25,7 @@ namespace USP.MetaAddressables
             #region Static Methods
             public static bool operator ==(GroupSchemaData leftHand, GroupSchemaData rightHand)
             {
-                var lhs = (object)leftHand;
-                var rhs = (object)rightHand;
-
-                if (lhs == rhs)
-                {
-                    return true;
-                }
-
-                if (rhs == null || lhs == null)
-                {
-                    return false;
-                }
-
-                return leftHand.GetHashCode() == rightHand.GetHashCode();
+                return ObjectComparer.CompareHash(leftHand, rightHand.GetHashCode());
             }
 
             public static bool operator !=(GroupSchemaData lhs, GroupSchemaData rhs)
@@ -57,7 +44,7 @@ namespace USP.MetaAddressables
                     return false;
                 }
 
-                return this == schemaData;
+                return Equals(this, schemaData);
             }
 
             public int GetHashCode(GroupSchemaData obj)
