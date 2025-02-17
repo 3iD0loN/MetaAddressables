@@ -37,7 +37,7 @@ namespace USP.MetaAddressables
                         return false;
                     }
 
-                    return StringComparer.CompareOrdinal(leftHand.Name, rightHand.Name);
+                    return StringComparer.Ordinal.Equals(leftHand.Name, rightHand.Name);
                 }
 
                 public static bool CompareNameAndHash(GroupData leftHand, GroupData rightHand)
@@ -55,7 +55,7 @@ namespace USP.MetaAddressables
                         return false;
                     }
 
-                    return StringComparer.CompareOrdinal(leftHand.Name, rightHand.Name) &&
+                    return StringComparer.Ordinal.Equals(leftHand.Name, rightHand.Name) &&
                         ObjectComparer.CompareHash(leftHand, rightHand);
                 }
 
@@ -74,7 +74,7 @@ namespace USP.MetaAddressables
                         return false;
                     }
 
-                    return StringComparer.CompareOrdinal(leftHand.Guid, rightHand.Guid);
+                    return StringComparer.Ordinal.Equals(leftHand.Guid, rightHand.Guid);
                 }
                 #endregion
 
