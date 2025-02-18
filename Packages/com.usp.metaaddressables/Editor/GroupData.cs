@@ -257,6 +257,7 @@ namespace USP.MetaAddressables
             #region ISerializationCallbackReceiver
             void ISerializationCallbackReceiver.OnBeforeSerialize()
             {
+                _schemaData = new GroupSchemaData[SchemaData.Count];
                 SchemaData.Values.CopyTo(_schemaData, 0);
             }
 

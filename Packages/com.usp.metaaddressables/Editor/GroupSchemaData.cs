@@ -20,6 +20,7 @@ namespace USP.MetaAddressables
     public static partial class MetaAddressables
     {
         #region Types
+        [Serializable]
         public abstract class GroupSchemaData : IEqualityComparer<GroupSchemaData>
         {
             #region Static Methods
