@@ -130,6 +130,7 @@ namespace USP.MetaAddressables
             #region ISerializationCallbackReceiver
             void ISerializationCallbackReceiver.OnBeforeSerialize()
             {
+                _labels = new string[Labels.Count];
                 Labels.CopyTo(_labels);
             }
 
