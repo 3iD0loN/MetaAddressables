@@ -246,6 +246,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
+        "com.unity.addressables": "2.2.2",
         "com.usp.metafileextension": "0.0.1"
       }
     },
