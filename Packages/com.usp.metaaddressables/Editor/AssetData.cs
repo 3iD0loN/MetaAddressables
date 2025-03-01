@@ -114,16 +114,9 @@ namespace USP.MetaAddressables
                 _readOnly = readOnly;
             }
 
-            public AssetData(AddressableAssetEntry entry)
+            public AssetData(AddressableAssetEntry entry) :
+                this(entry.guid, entry.address, entry.labels, entry.ReadOnly)
             {
-                _guid = entry.guid;
-
-                _address = entry.address;
-
-                _labels = new string[0];
-                Labels = entry.labels ?? new HashSet<string>();
-                
-                _readOnly = entry.ReadOnly;
             }
             #endregion
 
