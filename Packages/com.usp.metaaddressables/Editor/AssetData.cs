@@ -20,15 +20,26 @@ namespace USP.MetaAddressables
                 return Path.GetFileNameWithoutExtension(address);
             }
 
-            public static AddressableAssetEntry Create(AddressableAssetSettings settings,
+            public static AddressableAssetEntry CreateOrMove(AddressableAssetSettings settings,
                 AddressableAssetGroup group, AssetData assetData)
             {
-                AddressableAssetEntry entry = settings.CreateOrMoveEntry(assetData.Guid, group);
-                entry.SetAddress(assetData.Address);
+                return CreateOrMove(settings, assetData.Guid, group, assetData.Address, assetData.Labels);
+            }
 
-                foreach (var label in assetData.Labels)
+            public static AddressableAssetEntry CreateOrMove(AddressableAssetSettings settings, string guid,
+                AddressableAssetGroup group, string address = null, HashSet<string> labels = null)
+            {
+                AddressableAssetEntry entry = settings.CreateOrMoveEntry(guid, group);
+
+                if (address != null)
                 {
-                    entry.labels.Add(label);
+                    entry.SetAddress(address);
+                }
+
+                if (labels != null || labels.Count != 0)
+                {
+                    entry.labels.Clear();
+                    entry.labels.UnionWith(labels);
                 }
 
                 return entry;

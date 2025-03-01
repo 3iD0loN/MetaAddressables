@@ -102,7 +102,7 @@ namespace USP.MetaAddressables
             AddressableAssetGroup group = Generate(settings, ref groupData);
             userData.Group = groupData;
 
-            AssetData.Create(settings, group, userData.Asset);
+            AssetData.CreateOrMove(settings, group, userData.Asset);
         }
 
         public static void Clear(string assetFilePath)
