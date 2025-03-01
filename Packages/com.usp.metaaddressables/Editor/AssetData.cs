@@ -102,16 +102,16 @@ namespace USP.MetaAddressables
 
             #region Methods
             #region Constructors
-            public AssetData(string guid, string address, bool readOnly)
+            public AssetData(string guid, string address, HashSet<string> labels, bool readOnly)
             {
                 _guid = guid;
 
                 _address = address;
 
-                _readOnly = readOnly;
-
                 _labels = new string[0];
-                Labels = new HashSet<string>();
+                Labels = labels ?? new HashSet<string>();
+
+                _readOnly = readOnly;
             }
 
             public AssetData(AddressableAssetEntry entry)
@@ -120,10 +120,10 @@ namespace USP.MetaAddressables
 
                 _address = entry.address;
 
-                _readOnly = entry.ReadOnly;
-
                 _labels = new string[0];
-                Labels = entry.labels;
+                Labels = entry.labels ?? new HashSet<string>();
+                
+                _readOnly = entry.ReadOnly;
             }
             #endregion
 
