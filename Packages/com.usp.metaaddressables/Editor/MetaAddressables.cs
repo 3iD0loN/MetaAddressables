@@ -49,7 +49,7 @@ namespace USP.MetaAddressables
             {
                 // Attempt to find a group associated with the guid.
                 // If there was a group found that was associated with the guid, then:
-                if (AddressablesGroupLookup.GroupsByGuids.TryGetValue(groupData.Guid, out group))
+                if (AddressablesLookup.GroupsByGuids.TryGetValue(groupData.Guid, out group))
                 {
                     // Return the found group. Do nothing else.
                     return group;
@@ -64,7 +64,7 @@ namespace USP.MetaAddressables
             int hash = groupData.GetHashCode();
 
             // Attempt to find a list of groups that are associated with the group data.
-            bool found = AddressablesGroupLookup.GroupsByHash.TryGetValue(hash,
+            bool found = AddressablesLookup.GroupsByHash.TryGetValue(hash,
                 out List<AddressableAssetGroup> groupList);
 
             // If a list of groups is associated with the hash, then:
@@ -85,7 +85,7 @@ namespace USP.MetaAddressables
             groupList = new List<AddressableAssetGroup>();
 
             // Associate the list with the hash. 
-            AddressablesGroupLookup.GroupsByHash.Add(hash, groupList);
+            AddressablesLookup.GroupsByHash.Add(hash, groupList);
 
             group = GroupData.Create(settings, groupData);
 

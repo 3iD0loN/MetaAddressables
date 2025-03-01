@@ -9,7 +9,7 @@ using USP.MetaFileExtension;
 
 namespace USP.MetaAddressables
 {
-    public static class AddressablesGroupLookup
+    public static class AddressablesLookup
     {
         #region Static Properties
         public static Dictionary<string, AddressableAssetGroup> GroupsByGuids { get; }
@@ -18,7 +18,7 @@ namespace USP.MetaAddressables
         #endregion
 
         #region Static Methods
-        static AddressablesGroupLookup()
+        static AddressablesLookup()
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
 
