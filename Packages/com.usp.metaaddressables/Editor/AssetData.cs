@@ -102,6 +102,11 @@ namespace USP.MetaAddressables
 
             #region Methods
             #region Constructors
+            public AssetData(AddressableAssetEntry entry) :
+                this(entry.guid, entry.address, entry.labels, entry.ReadOnly)
+            {
+            }
+            
             public AssetData(string guid, string address, HashSet<string> labels, bool readOnly)
             {
                 _guid = guid;
@@ -114,10 +119,6 @@ namespace USP.MetaAddressables
                 _readOnly = readOnly;
             }
 
-            public AssetData(AddressableAssetEntry entry) :
-                this(entry.guid, entry.address, entry.labels, entry.ReadOnly)
-            {
-            }
             #endregion
 
             #region ISerializationCallbackReceiver
