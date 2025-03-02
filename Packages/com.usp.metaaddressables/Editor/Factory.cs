@@ -41,13 +41,13 @@ namespace USP.MetaAddressables
             public UserData Create(AssetImporter assetImporter)
             {
                 // Get the asset GUID associated with the asset file path.
-                GUID guid = AssetDatabase.GUIDFromAssetPath(assetImporter.assetPath);
+                string guid = AssetDatabase.AssetPathToGUID(assetImporter.assetPath);
 
                 var settings = AddressableAssetSettingsDefaultObject.Settings;
 
                 // Attempt to find an Addressable asset entry that is associated with the asset GUID.
                 // If there is, then the asset is already Addressable.
-                AddressableAssetEntry entry = settings.FindAssetEntry(guid.ToString());
+                AddressableAssetEntry entry = settings.FindAssetEntry(guid);
 
                 // If the asset is already Addressable, then: 
                 if (entry != null)
@@ -55,7 +55,7 @@ namespace USP.MetaAddressables
                     return new UserData(entry);
                 }
 
-                var assetData = new AssetData(guid.ToString(), assetImporter.assetPath, false);
+                var assetData = new AssetData(guid, assetImporter.assetPath, null, false);
                 var groupData = new GroupData(ActiveGroupTemplate);
 
                 return new UserData(assetData, groupData);
