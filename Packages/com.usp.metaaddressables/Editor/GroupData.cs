@@ -94,95 +94,9 @@ namespace USP.MetaAddressables
             #region Create
             public static AddressableAssetGroup Create(AddressableAssetSettings settings, GroupData groupData)
             {
-                List<AddressableAssetGroupSchema> schemas = Create(groupData.SchemaData);
+                List<AddressableAssetGroupSchema> schemas = GroupSchemaData.Create(groupData.SchemaData);
 
                 return settings.CreateGroup(groupData.Name, false, groupData.IsReadOnly, false, schemas);
-            }
-
-            private static GroupSchemaData Create(AddressableAssetGroupSchema groupSchema)
-            {
-                if (groupSchema is BundledAssetGroupSchema bundledAssetGroupScema)
-                {
-                    return new BundledAssetGroupSchemaData(bundledAssetGroupScema);
-                }
-                else if (groupSchema is ContentUpdateGroupSchema contentUpdateGroupSchemaData)
-                {
-                    return new ContentUpdateGroupSchemaData(contentUpdateGroupSchemaData);
-                }
-
-                return null;
-            }
-
-            private static Dictionary<Type, GroupSchemaData> Create(List<AddressableAssetGroupSchema> groupSchemas)
-            {
-                var result = new Dictionary<Type, GroupSchemaData>(groupSchemas.Count);
-                foreach (AddressableAssetGroupSchema groupSchema in groupSchemas)
-                {
-                    var data = Create(groupSchema);
-                    result.Add(data.GetType(), data);
-                }
-
-                return result;
-            }
-
-            private static AddressableAssetGroupSchema Create(GroupSchemaData groupSchemaData)
-            {
-                if (groupSchemaData is BundledAssetGroupSchemaData bundledAssetGroupScema)
-                {
-                    var settings = AddressableAssetSettingsDefaultObject.Settings;
-
-                    var groupSchema = new BundledAssetGroupSchema();
-
-                    groupSchema.InternalBundleIdMode = bundledAssetGroupScema.InternalBundleIdMode;
-                    groupSchema.Compression = bundledAssetGroupScema.Compression;
-                    groupSchema.IncludeAddressInCatalog = bundledAssetGroupScema.IncludeAddressInCatalog;
-                    groupSchema.IncludeGUIDInCatalog = bundledAssetGroupScema.IncludeGUIDInCatalog;
-                    groupSchema.IncludeLabelsInCatalog = bundledAssetGroupScema.IncludeLabelsInCatalog;
-                    groupSchema.InternalIdNamingMode = bundledAssetGroupScema.InternalIdNamingMode;
-                    groupSchema.AssetBundledCacheClearBehavior = bundledAssetGroupScema.CacheClearBehavior;
-                    groupSchema.IncludeInBuild = bundledAssetGroupScema.IncludeInBuild;
-                    groupSchema.BundledAssetProviderType = bundledAssetGroupScema.AssetBundleProviderType;
-                    groupSchema.ForceUniqueProvider = bundledAssetGroupScema.ForceUniqueProvider;
-                    groupSchema.UseAssetBundleCache = bundledAssetGroupScema.UseAssetBundleCache;
-                    groupSchema.UseAssetBundleCrc = bundledAssetGroupScema.UseAssetBundleCrc;
-                    groupSchema.UseAssetBundleCrcForCachedBundles = bundledAssetGroupScema.UseAssetBundleCrcForCachedBundles;
-                    groupSchema.UseUnityWebRequestForLocalBundles = bundledAssetGroupScema.UseUWRForLocalBundles;
-                    groupSchema.Timeout = bundledAssetGroupScema.Timeout;
-                    groupSchema.ChunkedTransfer = bundledAssetGroupScema.ChunkedTransfer;
-                    groupSchema.RedirectLimit = bundledAssetGroupScema.RedirectLimit;
-                    groupSchema.RetryCount = bundledAssetGroupScema.RetryCount;
-                    groupSchema.BuildPath.SetVariableById(settings, bundledAssetGroupScema.BuildPath.Id);
-                    groupSchema.LoadPath.SetVariableById(settings, bundledAssetGroupScema.LoadPath.Id);
-                    groupSchema.BundleMode = bundledAssetGroupScema.BundleMode;
-                    groupSchema.AssetBundleProviderType = bundledAssetGroupScema.AssetBundleProviderType;
-                    groupSchema.UseDefaultSchemaSettings = bundledAssetGroupScema.UseDefaultSchemaSettings;
-                    groupSchema.SelectedPathPairIndex = bundledAssetGroupScema.SelectedPathPairIndex;
-                    groupSchema.BundleNaming = bundledAssetGroupScema.BundleNaming;
-                    groupSchema.AssetLoadMode = bundledAssetGroupScema.AssetLoadMode;
-
-                    return groupSchema;
-                }
-                else if (groupSchemaData is ContentUpdateGroupSchemaData contentUpdateGroupSchema)
-                {
-                    var groupSchema = new ContentUpdateGroupSchema();
-                    groupSchema.StaticContent = contentUpdateGroupSchema.StaticContent;
-
-                    return groupSchema;
-                }
-
-                return default;
-            }
-
-            private static List<AddressableAssetGroupSchema> Create(Dictionary<Type, GroupSchemaData> groupSchemaData)
-            {
-                var result = new List<AddressableAssetGroupSchema>(groupSchemaData.Count);
-                foreach (GroupSchemaData schemaData in groupSchemaData.Values)
-                {
-                    AddressableAssetGroupSchema schema = Create(schemaData);
-                    result.Add(schema);
-                }
-
-                return result;
             }
             #endregion
 
@@ -227,17 +141,12 @@ namespace USP.MetaAddressables
             #region Methods
             #region Constructors
             public GroupData(AddressableAssetGroupTemplate groupTemplate) :
-                this(groupTemplate.Name, string.Empty, false, groupTemplate.SchemaObjects)
+                this(groupTemplate.Name, string.Empty, false, GroupSchemaData.Create(groupTemplate.SchemaObjects))
             {
             }
 
             public GroupData(AddressableAssetGroup group) :
-                this(group.Name, group.Guid, group.ReadOnly, group.Schemas)
-            {
-            }
-
-            private GroupData(string name, string guid, bool readOnly, List<AddressableAssetGroupSchema> groupSchemas) :
-                this(name, guid, readOnly, Create(groupSchemas))
+                this(group.Name, group.Guid, group.ReadOnly, GroupSchemaData.Create(group.Schemas))
             {
             }
 
@@ -250,7 +159,7 @@ namespace USP.MetaAddressables
                 _readOnly = readOnly;
 
                 _schemaData = new GroupSchemaData[0];
-                SchemaData = groupSchemaData;
+                SchemaData = groupSchemaData ?? new Dictionary<Type, GroupSchemaData>();
             }
             #endregion
 
