@@ -8,6 +8,7 @@ using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
 using USP.MetaFileExtension;
+using static USP.MetaAddressables.MetaAddressables;
 
 namespace USP.MetaAddressables
 {
@@ -86,7 +87,7 @@ namespace USP.MetaAddressables
                 return;
             }
 
-            bool found = GroupsAndHashesByGuids.TryGetValue(group.Guid, out (int Hash, AddressableAssetGroup) value);
+            bool found = GroupsAndHashesByGuids.TryGetValue(group.Guid, out int hash);
 
             if (!found)
             {
@@ -97,7 +98,7 @@ namespace USP.MetaAddressables
 
             // Attempt to get the list of Addressable groups that are associated with the hash.
             // (More than one group might have the same property values, so their property hashes might collide).
-            found = GroupsByPropertyHash.TryGetValue(value.Hash, out List<AddressableAssetGroup> groupList);
+            found = GroupsByPropertyHash.TryGetValue(hash, out List<AddressableAssetGroup> groupList);
 
             // If there is no list of groups associated with the hash, then: 
             if (!found)
@@ -110,7 +111,7 @@ namespace USP.MetaAddressables
 
             if (groupList.Count == 0)
             {
-                GroupsByPropertyHash.Remove(value.Hash);
+                GroupsByPropertyHash.Remove(hash);
             }
         }
 
@@ -136,6 +137,24 @@ namespace USP.MetaAddressables
 
                     break;
             }
+        }
+
+        public static bool TryGetValue(this Dictionary<string, (int, AddressableAssetGroup)> map, string guid, out int hash)
+        {
+            bool found = map.TryGetValue(guid, out (int Hash, AddressableAssetGroup) value);
+
+            hash = found ? value.Hash : -1;
+
+            return found;
+        }
+
+        public static bool TryGetValue(this Dictionary<string, (int, AddressableAssetGroup)> map, string guid, out AddressableAssetGroup group)
+        {
+            bool found = map.TryGetValue(guid, out (int, AddressableAssetGroup Group) value);
+
+            group = found ? value.Group : null;
+
+            return found;
         }
 
         #endregion

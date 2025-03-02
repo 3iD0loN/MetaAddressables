@@ -49,10 +49,10 @@ namespace USP.MetaAddressables
             {
                 // Attempt to find a group associated with the guid.
                 // If there was a group found that was associated with the guid, thenG
-                if (AddressablesLookup.GroupsAndHashesByGuids.TryGetValue(groupData.Guid, out (int, AddressableAssetGroup Group) value))
+                if (AddressablesLookup.GroupsAndHashesByGuids.TryGetValue(groupData.Guid, out group))
                 {
                     // Return the found group. Do nothing else.
-                    return value.Group;
+                    return group;
                 }
 
                 // Otherwise, there was no group found associated with the guid.
