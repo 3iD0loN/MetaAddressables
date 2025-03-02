@@ -3,6 +3,9 @@ using System;
 using UnityEngine;
 
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
+using System.Collections.Generic;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.AddressableAssets;
 
 namespace USP.MetaAddressables
 {
@@ -12,6 +15,16 @@ namespace USP.MetaAddressables
         [Serializable]
         public class ContentUpdateGroupSchemaData : GroupSchemaData
         {
+            #region Static Methods
+            public static ContentUpdateGroupSchema Create(ContentUpdateGroupSchemaData contentUpdateGroupSchema)
+            {
+                var result = new ContentUpdateGroupSchema();
+                result.StaticContent = contentUpdateGroupSchema.StaticContent;
+
+                return result;
+            }
+            #endregion
+
             #region Fields
             [SerializeField]
             private bool _staticContent;

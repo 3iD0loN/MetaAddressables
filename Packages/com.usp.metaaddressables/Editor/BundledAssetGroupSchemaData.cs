@@ -7,6 +7,7 @@ using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.ResourceManagement.Util;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using static UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema;
+using UnityEditor.AddressableAssets;
 
 namespace USP.MetaAddressables
 {
@@ -16,6 +17,49 @@ namespace USP.MetaAddressables
         [Serializable]
         public class BundledAssetGroupSchemaData : GroupSchemaData
         {
+            #region Static Methods
+            public static BundledAssetGroupSchema Create(BundledAssetGroupSchemaData bundledAssetGroupScema)
+            {
+                var settings = AddressableAssetSettingsDefaultObject.Settings;
+
+                if (settings == null)
+                {
+                    return null;
+                }
+
+                var result = new BundledAssetGroupSchema();
+
+                result.InternalBundleIdMode = bundledAssetGroupScema.InternalBundleIdMode;
+                result.Compression = bundledAssetGroupScema.Compression;
+                result.IncludeAddressInCatalog = bundledAssetGroupScema.IncludeAddressInCatalog;
+                result.IncludeGUIDInCatalog = bundledAssetGroupScema.IncludeGUIDInCatalog;
+                result.IncludeLabelsInCatalog = bundledAssetGroupScema.IncludeLabelsInCatalog;
+                result.InternalIdNamingMode = bundledAssetGroupScema.InternalIdNamingMode;
+                result.AssetBundledCacheClearBehavior = bundledAssetGroupScema.CacheClearBehavior;
+                result.IncludeInBuild = bundledAssetGroupScema.IncludeInBuild;
+                result.BundledAssetProviderType = bundledAssetGroupScema.AssetBundleProviderType;
+                result.ForceUniqueProvider = bundledAssetGroupScema.ForceUniqueProvider;
+                result.UseAssetBundleCache = bundledAssetGroupScema.UseAssetBundleCache;
+                result.UseAssetBundleCrc = bundledAssetGroupScema.UseAssetBundleCrc;
+                result.UseAssetBundleCrcForCachedBundles = bundledAssetGroupScema.UseAssetBundleCrcForCachedBundles;
+                result.UseUnityWebRequestForLocalBundles = bundledAssetGroupScema.UseUWRForLocalBundles;
+                result.Timeout = bundledAssetGroupScema.Timeout;
+                result.ChunkedTransfer = bundledAssetGroupScema.ChunkedTransfer;
+                result.RedirectLimit = bundledAssetGroupScema.RedirectLimit;
+                result.RetryCount = bundledAssetGroupScema.RetryCount;
+                result.BuildPath.SetVariableById(settings, bundledAssetGroupScema.BuildPath.Id);
+                result.LoadPath.SetVariableById(settings, bundledAssetGroupScema.LoadPath.Id);
+                result.BundleMode = bundledAssetGroupScema.BundleMode;
+                result.AssetBundleProviderType = bundledAssetGroupScema.AssetBundleProviderType;
+                result.UseDefaultSchemaSettings = bundledAssetGroupScema.UseDefaultSchemaSettings;
+                result.SelectedPathPairIndex = bundledAssetGroupScema.SelectedPathPairIndex;
+                result.BundleNaming = bundledAssetGroupScema.BundleNaming;
+                result.AssetLoadMode = bundledAssetGroupScema.AssetLoadMode;
+
+                return result;
+            }
+            #endregion
+
             #region Fields
             [SerializeField]
             private BundleInternalIdMode _internalBundleIdMode = BundleInternalIdMode.GroupGuidProjectIdHash;

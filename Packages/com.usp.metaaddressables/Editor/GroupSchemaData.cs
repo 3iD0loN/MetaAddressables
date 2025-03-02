@@ -25,6 +25,20 @@ namespace USP.MetaAddressables
         {
             #region Static Methods
             #region Create
+            public static AddressableAssetGroupSchema Create(GroupSchemaData groupSchemaData)
+            {
+                if (groupSchemaData is BundledAssetGroupSchemaData bundledAssetGroupScema)
+                {
+                    return BundledAssetGroupSchemaData.Create(bundledAssetGroupScema);
+                }
+                else if (groupSchemaData is ContentUpdateGroupSchemaData contentUpdateGroupSchema)
+                {
+                    return ContentUpdateGroupSchemaData.Create(contentUpdateGroupSchema);
+                }
+
+                return default;
+            }
+
             public static GroupSchemaData Create(AddressableAssetGroupSchema groupSchema)
             {
                 if (groupSchema is BundledAssetGroupSchema bundledAssetGroupScema)
@@ -42,69 +56,25 @@ namespace USP.MetaAddressables
             public static Dictionary<Type, GroupSchemaData> Create(List<AddressableAssetGroupSchema> groupSchemas)
             {
                 var result = new Dictionary<Type, GroupSchemaData>(groupSchemas.Count);
+
                 foreach (AddressableAssetGroupSchema groupSchema in groupSchemas)
                 {
                     var data = Create(groupSchema);
+
                     result.Add(data.GetType(), data);
                 }
 
                 return result;
             }
 
-            public static AddressableAssetGroupSchema Create(GroupSchemaData groupSchemaData)
-            {
-                if (groupSchemaData is BundledAssetGroupSchemaData bundledAssetGroupScema)
-                {
-                    var settings = AddressableAssetSettingsDefaultObject.Settings;
-
-                    var groupSchema = new BundledAssetGroupSchema();
-
-                    groupSchema.InternalBundleIdMode = bundledAssetGroupScema.InternalBundleIdMode;
-                    groupSchema.Compression = bundledAssetGroupScema.Compression;
-                    groupSchema.IncludeAddressInCatalog = bundledAssetGroupScema.IncludeAddressInCatalog;
-                    groupSchema.IncludeGUIDInCatalog = bundledAssetGroupScema.IncludeGUIDInCatalog;
-                    groupSchema.IncludeLabelsInCatalog = bundledAssetGroupScema.IncludeLabelsInCatalog;
-                    groupSchema.InternalIdNamingMode = bundledAssetGroupScema.InternalIdNamingMode;
-                    groupSchema.AssetBundledCacheClearBehavior = bundledAssetGroupScema.CacheClearBehavior;
-                    groupSchema.IncludeInBuild = bundledAssetGroupScema.IncludeInBuild;
-                    groupSchema.BundledAssetProviderType = bundledAssetGroupScema.AssetBundleProviderType;
-                    groupSchema.ForceUniqueProvider = bundledAssetGroupScema.ForceUniqueProvider;
-                    groupSchema.UseAssetBundleCache = bundledAssetGroupScema.UseAssetBundleCache;
-                    groupSchema.UseAssetBundleCrc = bundledAssetGroupScema.UseAssetBundleCrc;
-                    groupSchema.UseAssetBundleCrcForCachedBundles = bundledAssetGroupScema.UseAssetBundleCrcForCachedBundles;
-                    groupSchema.UseUnityWebRequestForLocalBundles = bundledAssetGroupScema.UseUWRForLocalBundles;
-                    groupSchema.Timeout = bundledAssetGroupScema.Timeout;
-                    groupSchema.ChunkedTransfer = bundledAssetGroupScema.ChunkedTransfer;
-                    groupSchema.RedirectLimit = bundledAssetGroupScema.RedirectLimit;
-                    groupSchema.RetryCount = bundledAssetGroupScema.RetryCount;
-                    groupSchema.BuildPath.SetVariableById(settings, bundledAssetGroupScema.BuildPath.Id);
-                    groupSchema.LoadPath.SetVariableById(settings, bundledAssetGroupScema.LoadPath.Id);
-                    groupSchema.BundleMode = bundledAssetGroupScema.BundleMode;
-                    groupSchema.AssetBundleProviderType = bundledAssetGroupScema.AssetBundleProviderType;
-                    groupSchema.UseDefaultSchemaSettings = bundledAssetGroupScema.UseDefaultSchemaSettings;
-                    groupSchema.SelectedPathPairIndex = bundledAssetGroupScema.SelectedPathPairIndex;
-                    groupSchema.BundleNaming = bundledAssetGroupScema.BundleNaming;
-                    groupSchema.AssetLoadMode = bundledAssetGroupScema.AssetLoadMode;
-
-                    return groupSchema;
-                }
-                else if (groupSchemaData is ContentUpdateGroupSchemaData contentUpdateGroupSchema)
-                {
-                    var groupSchema = new ContentUpdateGroupSchema();
-                    groupSchema.StaticContent = contentUpdateGroupSchema.StaticContent;
-
-                    return groupSchema;
-                }
-
-                return default;
-            }
-
             public static List<AddressableAssetGroupSchema> Create(Dictionary<Type, GroupSchemaData> groupSchemaData)
             {
                 var result = new List<AddressableAssetGroupSchema>(groupSchemaData.Count);
+
                 foreach (GroupSchemaData schemaData in groupSchemaData.Values)
                 {
                     AddressableAssetGroupSchema schema = Create(schemaData);
+
                     result.Add(schema);
                 }
 
