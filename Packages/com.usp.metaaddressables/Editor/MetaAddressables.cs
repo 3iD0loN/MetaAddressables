@@ -34,6 +34,18 @@ namespace USP.MetaAddressables
                 return null;
             }
 
+            return MetaFile.Read<UserData>(assetImporter, UserDataKey);
+        }
+
+        public static UserData ReadOrCreate(string assetFilePath)
+        {
+            AssetImporter assetImporter = AssetImporter.GetAtPath(assetFilePath);
+
+            if (assetImporter == null)
+            {
+                return null;
+            }
+
             return MetaFile.Read(assetImporter, UserDataKey, factory.Create);
         }
 
