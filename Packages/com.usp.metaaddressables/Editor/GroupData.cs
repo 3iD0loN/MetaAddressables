@@ -94,9 +94,14 @@ namespace USP.MetaAddressables
             #region Create
             public static AddressableAssetGroup Create(AddressableAssetSettings settings, GroupData groupData)
             {
-                List<AddressableAssetGroupSchema> schemas = GroupSchemaData.Create(groupData.SchemaData);
+                List<AddressableAssetGroupSchema> groupSchemas = GroupSchemaData.Create(groupData.SchemaData);
 
-                return settings.CreateGroup(groupData.Name, false, groupData.IsReadOnly, false, schemas);
+                return settings.CreateGroup(groupData.Name, false, groupData.IsReadOnly, true, groupSchemas);
+            }
+
+            public static AddressableAssetGroup Create(AddressableAssetSettings settings, AddressableAssetGroupTemplate groupTemplate)
+            {
+                return settings.CreateGroup(groupTemplate.Name, false, false, true, groupTemplate.SchemaObjects);
             }
             #endregion
 
