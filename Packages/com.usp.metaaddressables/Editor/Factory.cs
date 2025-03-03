@@ -44,7 +44,14 @@ namespace USP.MetaAddressables
                 string guid = AssetDatabase.AssetPathToGUID(assetImporter.assetPath);
 
                 var settings = AddressableAssetSettingsDefaultObject.Settings;
+                if (settings == null)
+                {
+                    var assetData = new AssetData(guid, assetImporter.assetPath, null, false);
+                    var groupData = new GroupData(ActiveGroupTemplate);
 
+                    return new UserData(assetData, groupData);
+                }
+                
                 // Attempt to find an Addressable asset entry that is associated with the asset GUID.
                 // If there is, then the asset is already Addressable.
                 AddressableAssetEntry entry = settings.FindAssetEntry(guid);
@@ -54,11 +61,6 @@ namespace USP.MetaAddressables
                 {
                     return new UserData(entry);
                 }
-
-                var assetData = new AssetData(guid, assetImporter.assetPath, null, false);
-                var groupData = new GroupData(ActiveGroupTemplate);
-
-                return new UserData(assetData, groupData);
             }
             #endregion
         }
