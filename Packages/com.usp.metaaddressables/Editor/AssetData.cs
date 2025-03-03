@@ -29,6 +29,11 @@ namespace USP.MetaAddressables
             public static AddressableAssetEntry CreateOrMove(AddressableAssetSettings settings, string guid,
                 AddressableAssetGroup group, string address = null, HashSet<string> labels = null)
             {
+                if (settings == null)
+                {
+                    return null;
+                }
+
                 AddressableAssetEntry entry = settings.CreateOrMoveEntry(guid, group);
 
                 if (address != null)
