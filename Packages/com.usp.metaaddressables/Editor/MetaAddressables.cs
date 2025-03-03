@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,16 +17,28 @@ namespace USP.MetaAddressables
         #endregion
 
         #region Static Fields
-        public static readonly Factory factory;
+        private static ICreationFactory factory;
+        #endregion
+
+        #region Static Properties
+        public static ICreationFactory Factory
+        {
+            get
+            {
+                if (factory == null)
+                {
+                    factory = new CreationFactory();
+                }
+
+                return factory;
+            }
+
+            set => factory = value;
+        }
         #endregion
 
         #region Static Methods
-        static MetaAddressables()
-        {
-            factory = new Factory();
-        }
-
-        public static UserData Read(string assetFilePath)
+        public static UserData Read(string assetFilePath, ICreationFactory creationFactory = null)
         {
             AssetImporter assetImporter = AssetImporter.GetAtPath(assetFilePath);
 
@@ -34,19 +47,9 @@ namespace USP.MetaAddressables
                 return null;
             }
 
-            return MetaFile.Read<UserData>(assetImporter, UserDataKey);
-        }
+            Func<AssetImporter, UserData> createEntry = factory != null ? factory.Create : null;
 
-        public static UserData ReadOrCreate(string assetFilePath)
-        {
-            AssetImporter assetImporter = AssetImporter.GetAtPath(assetFilePath);
-
-            if (assetImporter == null)
-            {
-                return null;
-            }
-
-            return MetaFile.Read(assetImporter, UserDataKey, factory.Create);
+            return MetaFile.Read(assetImporter, UserDataKey, createEntry);
         }
 
         public static (AddressableAssetGroup, GroupData) Generate(GroupData groupData, AddressableAssetSettings settings)
