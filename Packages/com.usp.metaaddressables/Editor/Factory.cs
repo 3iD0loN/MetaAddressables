@@ -14,6 +14,7 @@ using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using static UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema;
 
 using USP.MetaFileExtension;
+using DocumentFormat.OpenXml.Presentation;
 
 namespace USP.MetaAddressables
 {
@@ -52,15 +53,7 @@ namespace USP.MetaAddressables
                     return new UserData(assetData, groupData);
                 }
                 
-                // Attempt to find an Addressable asset entry that is associated with the asset GUID.
-                // If there is, then the asset is already Addressable.
-                AddressableAssetEntry entry = settings.FindAssetEntry(guid);
-
-                // If the asset is already Addressable, then: 
-                if (entry != null)
-                {
-                    return new UserData(entry);
-                }
+                return UserData.Create(settings, guid);
             }
             #endregion
         }
