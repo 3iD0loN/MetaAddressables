@@ -184,13 +184,21 @@ namespace USP.MetaAddressables
 
             public override int GetHashCode()
             {
-                int result = _readOnly.GetHashCode();
+                int result = 17;
 
-                foreach (var schema in SchemaData)
+                result = result * 31 ^ _readOnly.GetHashCode();
+
+                int result2 = 17;
+                foreach (var pair in SchemaData)
                 {
-                    int hash = schema.GetHashCode();
-                    result = result * 31 ^ hash;
+                    int result3 = 17;
+                    result3 = result3 * 31 ^ pair.Key.GetHashCode();
+                    result3 = result3 * 31 ^ pair.Value.GetHashCode();
+
+                    result2 = result2 * 31 ^ result3;
                 }
+
+                result = result * 31 ^ result2;
 
                 return result;
             }
