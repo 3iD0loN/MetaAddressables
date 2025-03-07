@@ -2,12 +2,12 @@ using System;
 
 using UnityEngine;
 
+using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.ResourceManagement.Util;
-using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using static UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema;
-using UnityEditor.AddressableAssets;
 
 namespace USP.MetaAddressables
 {
