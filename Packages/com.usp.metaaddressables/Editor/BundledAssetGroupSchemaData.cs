@@ -388,7 +388,8 @@ namespace USP.MetaAddressables
 
             public override int GetHashCode()
             {
-                int result = _internalBundleIdMode.GetHashCode();
+                int result = 17;
+                result = result * 31 ^ _internalBundleIdMode.GetHashCode();
                 result = result * 31 ^ _compression.GetHashCode();
                 result = result * 31 ^ _includeAddressInCatalog.GetHashCode();
                 result = result * 31 ^ _includeGUIDInCatalog.GetHashCode();
