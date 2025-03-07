@@ -3,12 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
-using UnityEditor.AddressableAssets.Settings.GroupSchemas;
-using static UnityEditor.AddressableAssets.Build.Layout.BuildLayout;
-using static USP.MetaAddressables.MetaAddressables;
-
 
 namespace USP.MetaAddressables
 {
@@ -37,7 +32,7 @@ namespace USP.MetaAddressables
                         return false;
                     }
 
-                    return StringComparer.Ordinal.Equals(leftHand.Name, rightHand.Name);
+                    return System.StringComparer.Ordinal.Equals(leftHand.Name, rightHand.Name);
                 }
 
                 public static bool CompareNameAndHash(GroupData leftHand, GroupData rightHand)
@@ -55,7 +50,7 @@ namespace USP.MetaAddressables
                         return false;
                     }
 
-                    return StringComparer.Ordinal.Equals(leftHand.Name, rightHand.Name) &&
+                    return System.StringComparer.Ordinal.Equals(leftHand.Name, rightHand.Name) &&
                         ObjectComparer.CompareHash(leftHand, rightHand);
                 }
 
@@ -74,7 +69,7 @@ namespace USP.MetaAddressables
                         return false;
                     }
 
-                    return StringComparer.Ordinal.Equals(leftHand.Guid, rightHand.Guid);
+                    return System.StringComparer.Ordinal.Equals(leftHand.Guid, rightHand.Guid);
                 }
                 #endregion
 
