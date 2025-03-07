@@ -45,7 +45,10 @@ namespace USP.MetaAddressables
 
             public override int GetHashCode()
             {
-                return _staticContent.GetHashCode();
+                int result = 17;
+                result = result * 31 ^ _staticContent.GetHashCode();
+
+                return result;
             }
             #endregion
         }
