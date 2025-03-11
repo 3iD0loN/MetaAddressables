@@ -9,7 +9,7 @@ namespace USP.MetaAddressables
         #endregion
 
         #region Properties
-        public IEnumerable<W> Children => null;
+        public IEnumerable<PropertyComparerPair> Children => null;
         #endregion
 
         #region Methods

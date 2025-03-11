@@ -7,16 +7,16 @@ namespace USP.MetaAddressables
     public class PropertyComparer<T> : IPropertyComparer<T>
     {
         #region Static Methods
-        private static void ThrowExceptionIfNull(IEnumerable<W> children)
+        private static void ThrowExceptionIfNull(IEnumerable<PropertyComparerPair> children)
         {
             if (children == null)
             {
                 return;
             }
 
-            foreach (W child in children)
+            foreach (PropertyComparerPair child in children)
             {
-                if (child.LambdaExpression == null || child.PropertyComparer == null)
+                if (child.PropertyExpression == null || child.PropertyComparer == null)
                 {
                     throw new NullReferenceException("Property expression cannot be null.");
                 }
@@ -32,13 +32,13 @@ namespace USP.MetaAddressables
         #endregion
 
         #region Properties
-        public IEnumerable<W> Children => TypedChildren;
+        public IEnumerable<PropertyComparerPair> Children => TypedChildren;
 
-        public IEnumerable<Y<T, object>> TypedChildren { get; }
+        public IEnumerable<PropertyComparerPair<T, object>> TypedChildren { get; }
         #endregion
 
         #region Methods
-        public PropertyComparer(params Y<T, object>[] children)
+        public PropertyComparer(params PropertyComparerPair<T, object>[] children)
         {
             this.TypedChildren = children;
 
@@ -61,7 +61,7 @@ namespace USP.MetaAddressables
 
             if (Children != null)
             {
-                foreach (Y<T, object> child in TypedChildren)
+                foreach (PropertyComparerPair<T, object> child in TypedChildren)
                 {
                     var childLeftHand = child.Access(leftHand);
                     var childRightHand = child.Access(rightHand);
@@ -84,7 +84,7 @@ namespace USP.MetaAddressables
 
             int result = 17;
 
-            foreach (Y<T, object> child in TypedChildren)
+            foreach (PropertyComparerPair<T, object> child in TypedChildren)
             {
                 var childTarget = child.Access(target);
 
