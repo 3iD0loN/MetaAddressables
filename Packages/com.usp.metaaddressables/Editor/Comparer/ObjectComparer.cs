@@ -1,8 +1,23 @@
+using System.Collections.Generic;
+
 namespace USP.MetaAddressables
 {
-    public partial class ObjectComparer
+    public partial class ObjectComparer : IEqualityComparer<object>, IPropertyComparer
     {
-        public static bool CompareHash(object leftHand, object rightHand)
+        #region Static Fields
+        public static readonly ObjectComparer Default = new ObjectComparer();
+        #endregion
+
+        #region Properties
+        public IEnumerable<W> Children => null;
+        #endregion
+
+        #region Methods
+        protected ObjectComparer()
+        {
+        }
+
+        public new virtual bool Equals(object leftHand, object rightHand)
         {
             if (leftHand == rightHand)
             {
@@ -14,7 +29,18 @@ namespace USP.MetaAddressables
                 return false;
             }
 
-            return leftHand.GetHashCode() == rightHand.GetHashCode();
+            return leftHand.Equals(rightHand);
         }
+
+        public virtual int GetHashCode(object target)
+        {
+            if (target == null)
+            {
+                return -1;
+            }
+
+            return target.GetHashCode();
+        }
+        #endregion
     }
 }
