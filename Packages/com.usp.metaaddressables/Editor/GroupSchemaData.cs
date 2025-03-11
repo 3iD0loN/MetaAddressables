@@ -1,19 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
-using UnityEngine;
-
-using UnityEditor;
-using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
-using UnityEngine.ResourceManagement.ResourceProviders;
-using UnityEngine.ResourceManagement.Util;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
-using static UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema;
-
-using USP.MetaFileExtension;
 
 namespace USP.MetaAddressables
 {
@@ -81,16 +70,6 @@ namespace USP.MetaAddressables
                 return result;
             }
             #endregion
-
-            public static bool operator ==(GroupSchemaData leftHand, GroupSchemaData rightHand)
-            {
-                return ObjectComparer.CompareHash(leftHand, rightHand.GetHashCode());
-            }
-
-            public static bool operator !=(GroupSchemaData lhs, GroupSchemaData rhs)
-            {
-                return !(lhs == rhs);
-            }
             #endregion
 
             #region Methods
@@ -111,9 +90,19 @@ namespace USP.MetaAddressables
                 return obj.GetHashCode();
             }
 
-            public bool Equals(GroupSchemaData lhs, GroupSchemaData rhs)
+            public bool Equals(GroupSchemaData leftHand, GroupSchemaData rightHand)
             {
-                return lhs == rhs;
+                if (leftHand == rightHand)
+                {
+                    return true;
+                }
+
+                if (rightHand == null || leftHand == null)
+                {
+                    return false;
+                }
+
+                return ObjectComparer.CompareHash(leftHand, rightHand.GetHashCode());
             }
             #endregion
         }
