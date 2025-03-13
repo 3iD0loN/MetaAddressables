@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -10,9 +11,8 @@ namespace USP.MetaAddressables
     public class PropertyComparerPair : Tuple<LambdaExpression, IPropertyComparer>
     {
         #region Static Methods
-        private static MemberExpression ExtractMemberExpression(LambdaExpression expression)
+        private static MemberExpression ExtractMemberExpression(Expression bodyExpression)
         {
-            Expression bodyExpression = expression.Body;
             if (bodyExpression is UnaryExpression unaryExpression)
             {
                 // This usually occurs as a result of implicit boxing of a simple native type to System.Object with Convert()
@@ -41,18 +41,54 @@ namespace USP.MetaAddressables
         /// A property comparer used to compare two corresponding objects in a class hierarchy.
         /// </summary>
         public readonly MemberExpression MemberExpression;
+
+        public readonly MethodCallExpression MethodCallExpression;
         #endregion
 
         #region Methods
         public PropertyComparerPair(LambdaExpression item1, IPropertyComparer item2) 
             : base(item1, item2)
         {
-            MemberExpression = ExtractMemberExpression(item1);
+            Expression bodyExpression = item1.Body;
+            if (bodyExpression is not MethodCallExpression methodCallExpression)
+            {
+                MemberExpression = ExtractMemberExpression(bodyExpression);
+            }
+            else
+            {
+                MethodCallExpression = methodCallExpression;
+            }
         }
 
         public T GetMemberInfo<T>() where T : MemberInfo
         {
+            if (MemberExpression == null)
+            {
+                return null;
+            }
+
             return MemberExpression.Member as T;
+        }
+
+        public MethodInfo GetMethodInfo()
+        {
+            if (MethodCallExpression != null)
+            {
+                return MethodCallExpression.Method;
+            }
+
+            var propertyInfo = GetMemberInfo<PropertyInfo>();
+            if (propertyInfo != null)
+            {
+                return propertyInfo.GetMethod;
+            }
+
+            return null;
+        }
+
+        public T GetMethodInfo<T>() where T : MethodInfo
+        {            
+            return GetMethodInfo() as T;
         }
 
         public virtual object Access(object value)
@@ -75,7 +111,8 @@ namespace USP.MetaAddressables
         #endregion
 
         #region Methods
-        public PropertyComparerPair(E item1, IPropertyComparer item2) : base(item1, item2)
+        public PropertyComparerPair(E item1, IPropertyComparer item2) :
+            base(item1, item2)
         {
         }
         #endregion
@@ -107,7 +144,8 @@ namespace USP.MetaAddressables
         #endregion
 
         #region Methods
-        public PropertyComparerPair(Expression<Func<T, U>> item1, IPropertyComparer item2) : base(item1, item2)
+        public PropertyComparerPair(Expression<Func<T, U>> item1, IPropertyComparer item2) :
+            base(item1, item2)
         {
         }
 
@@ -118,7 +156,7 @@ namespace USP.MetaAddressables
 
         public virtual U Access(T value)
         {
-            var @delegate = Expression?.Compile();
+            Func<T, U> @delegate = Expression?.Compile();
 
             if (@delegate == null)
             {
