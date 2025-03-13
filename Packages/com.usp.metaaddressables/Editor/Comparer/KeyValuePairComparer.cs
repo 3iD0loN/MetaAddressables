@@ -4,7 +4,7 @@ namespace USP.MetaAddressables
 {
     public class KeyValuePairComparer<K, V> : PropertyComparer<KeyValuePair<K, V>>
     {
-        public KeyValuePairComparer(IPropertyComparer keyComparer = null, IPropertyComparer valueComparer = null) :
+        public KeyValuePairComparer(IPropertyComparer keyComparer, IPropertyComparer valueComparer) :
             base((x => x.Key, keyComparer),
                 (x => x.Value, valueComparer))
         {
