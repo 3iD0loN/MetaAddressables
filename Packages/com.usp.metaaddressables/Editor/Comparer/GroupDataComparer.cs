@@ -3,15 +3,18 @@ using System.Collections.Generic;
 
 namespace USP.MetaAddressables
 {
-    public class GroupDataComparer : PropertyComparer<MetaAddressables.GroupData>
+    using static USP.MetaAddressables.MetaAddressables;
+    using KeyComparer = ObjectComparer<Type>;
+    using SchemaDataComparer = DictionaryComparer<Type, MetaAddressables.GroupSchemaData>;
+
+    public class GroupDataComparer : PropertyComparer<GroupData>
     {
+        SchemaDataComparer x = new SchemaDataComparer(ObjectComparer<Type>.Default, new GroupSchemaDataComparer());
+
         public GroupDataComparer() :
-            base((x => x.IsReadOnly, ObjectComparer.Default),
-                (x => x.SchemaData, 
-                    new EnumerableComparer<KeyValuePair<Type, MetaAddressables.GroupSchemaData>>(
-                        new KeyValuePairComparer<Type, MetaAddressables.GroupSchemaData>(ObjectComparer.Default, new GroupSchemaDataComparer()))))
+            base(new PropertyComparerPair<GroupData, bool>(x => x.IsReadOnly, ObjectComparer<bool>.Default),
+                new PropertyComparerPair<GroupData, Dictionary<Type, GroupSchemaData>>(x => x.SchemaData, null))
         {
         }
     }
 }
-

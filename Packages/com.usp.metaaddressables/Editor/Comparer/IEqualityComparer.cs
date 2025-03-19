@@ -1,11 +1,11 @@
 namespace USP.MetaAddressables
 {
-    public interface IEqualityComparer
+    // Causes CS0114 if there is no new keyword.
+    public interface IItemComparer : System.Collections.IEqualityComparer
     {
-        #region Methods
-        bool Equals(object x, object y);
+    }
 
-        int GetHashCode(object obj);
-        #endregion
+    public interface IItemComparer<T> : IItemComparer, System.Collections.Generic.IEqualityComparer<T> 
+    {
     }
 }

@@ -3,23 +3,25 @@ using System.Collections.Generic;
 
 namespace USP.MetaAddressables
 {
+    using IGroupSchemaDataComparer = IEqualityComparer<MetaAddressables.GroupSchemaData>;
+
     public class GroupSchemaDataComparer : GenericComparer<MetaAddressables.GroupSchemaData>
     {
-        private static readonly Dictionary<Type, IPropertyComparer> lookup = new Dictionary<Type, IPropertyComparer>
+        private static readonly Dictionary<Type, IEqualityComparer<MetaAddressables.GroupSchemaData>> lookup = new Dictionary<Type, IGroupSchemaDataComparer>
         {
-            { typeof(MetaAddressables.BundledAssetGroupSchemaData), new BundledAssetGroupSchemaDataComparer() },
-            { typeof(MetaAddressables.ContentUpdateGroupSchemaData), new ContentUpdateGroupSchemaDataComparer() },
+            //{ typeof(MetaAddressables.BundledAssetGroupSchemaData), new BundledAssetGroupSchemaDataComparer() },
+            //{ typeof(MetaAddressables.ContentUpdateGroupSchemaData), new ContentUpdateGroupSchemaDataComparer() },
         };
-
+        
         #region Static Methods
-        public static IPropertyComparer GetComparer<T>() where T : MetaAddressables.GroupSchemaData
+        public static IEqualityComparer<MetaAddressables.GroupSchemaData> GetComparer<T>() where T : MetaAddressables.GroupSchemaData
         {
             return GetComparer(typeof(T));
         }
 
-        public static IPropertyComparer GetComparer(Type type)
+        public static IEqualityComparer<MetaAddressables.GroupSchemaData> GetComparer(Type type)
         {
-            bool found = lookup.TryGetValue(type, out IPropertyComparer value);
+            bool found = lookup.TryGetValue(type, out IEqualityComparer<MetaAddressables.GroupSchemaData> value);
 
             if (!found)
             {
@@ -46,7 +48,7 @@ namespace USP.MetaAddressables
                 return false;
             }
 
-            IPropertyComparer comparer = GetComparer(leftHand.GetType());
+            IGroupSchemaDataComparer comparer = GetComparer(leftHand.GetType());
 
             return comparer.Equals(leftHand, rightHand);
         }
@@ -58,7 +60,7 @@ namespace USP.MetaAddressables
                 return 0;
             }
 
-            IPropertyComparer comparer = GetComparer(target.GetType());
+            IGroupSchemaDataComparer comparer = GetComparer(target.GetType());
 
             return comparer.GetHashCode(target);
         }

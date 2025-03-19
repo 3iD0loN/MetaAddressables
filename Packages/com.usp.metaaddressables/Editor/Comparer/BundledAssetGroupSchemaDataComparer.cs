@@ -1,34 +1,67 @@
+using System; 
+using static USP.MetaAddressables.MetaAddressables;
+using static UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema;
+using UnityEngine.ResourceManagement.ResourceProviders;
+
 namespace USP.MetaAddressables
 {
     public class BundledAssetGroupSchemaDataComparer : PropertyComparer<MetaAddressables.BundledAssetGroupSchemaData>
     {
         public BundledAssetGroupSchemaDataComparer() :
-            base((x => x.InternalBundleIdMode, ObjectComparer.Default),
-                (x => x.Compression, ObjectComparer.Default),
-                (x => x.IncludeAddressInCatalog, ObjectComparer.Default),
-                (x => x.IncludeGUIDInCatalog, ObjectComparer.Default),
-                (x => x.IncludeLabelsInCatalog, ObjectComparer.Default),
-                (x => x.InternalIdNamingMode, ObjectComparer.Default),
-                (x => x.CacheClearBehavior, ObjectComparer.Default),
-                (x => x.IncludeInBuild, ObjectComparer.Default),
-                (x => x.BundledAssetProviderType.Value, ObjectComparer.Default),
-                (x => x.ForceUniqueProvider, ObjectComparer.Default),
-                (x => x.UseAssetBundleCache, ObjectComparer.Default),
-                (x => x.UseAssetBundleCrc, ObjectComparer.Default),
-                (x => x.UseAssetBundleCrcForCachedBundles, ObjectComparer.Default),
-                (x => x.UseUWRForLocalBundles, ObjectComparer.Default),
-                (x => x.Timeout, ObjectComparer.Default),
-                (x => x.ChunkedTransfer, ObjectComparer.Default),
-                (x => x.RedirectLimit, ObjectComparer.Default),
-                (x => x.RetryCount, ObjectComparer.Default),
-                (x => x.BuildPath.Id, ObjectComparer.Default),
-                (x => x.LoadPath.Id, ObjectComparer.Default),
-                (x => x.BundleMode, ObjectComparer.Default),
-                (x => x.AssetBundleProviderType.Value, ObjectComparer.Default),
-                (x => x.UseDefaultSchemaSettings, ObjectComparer.Default),
-                (x => x.SelectedPathPairIndex, ObjectComparer.Default),
-                (x => x.BundleNaming, ObjectComparer.Default),
-                (x => x.AssetLoadMode, ObjectComparer.Default))
+            base(new PropertyComparerPair(x => (x as BundledAssetGroupSchemaData).InternalBundleIdMode),
+                new PropertyComparerPair(x => x.Compression),
+                new PropertyComparerPair(x => x.IncludeAddressInCatalog),
+                new PropertyComparerPair(x => x.IncludeGUIDInCatalog),
+                new PropertyComparerPair(x => x.IncludeLabelsInCatalog),
+                new PropertyComparerPair(x => x.InternalIdNamingMode),
+                new PropertyComparerPair(x => x.CacheClearBehavior),
+                new PropertyComparerPair(x => x.IncludeInBuild),
+                new PropertyComparerPair(x => x.BundledAssetProviderType.Value),
+                new PropertyComparerPair(x => x.ForceUniqueProvider),
+                new PropertyComparerPair(x => x.UseAssetBundleCache),
+                new PropertyComparerPair(x => x.UseAssetBundleCrc),
+                new PropertyComparerPair(x => x.UseAssetBundleCrcForCachedBundles),
+                new PropertyComparerPair(x => x.UseUWRForLocalBundles),
+                new PropertyComparerPair(x => x.Timeout),
+                new PropertyComparerPair(x => x.ChunkedTransfer),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, int>(x => x.RedirectLimit),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, int>(x => x.RetryCount),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, string>(x => x.BuildPath.Id, StringComparer.Ordinal),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, string>(x => x.LoadPath.Id, StringComparer.Ordinal),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, BundlePackingMode>(x => x.BundleMode),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, Type>(x => x.AssetBundleProviderType.Value),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.UseDefaultSchemaSettings),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, int>(x => x.SelectedPathPairIndex),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, BundleNamingStyle>(x => x.BundleNaming),
+                new PropertyComparerPair<BundledAssetGroupSchemaData, AssetLoadMode>(x => x.AssetLoadMode))
+        /*/
+        base(new PropertyComparerPair<BundledAssetGroupSchemaData, BundleInternalIdMode>(x => x.InternalBundleIdMode),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, BundleCompressionMode>(x => x.Compression),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.IncludeAddressInCatalog),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.IncludeGUIDInCatalog),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.IncludeLabelsInCatalog),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, AssetNamingMode>(x => x.InternalIdNamingMode),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, CacheClearBehavior>(x => x.CacheClearBehavior),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.IncludeInBuild),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, Type>(x => x.BundledAssetProviderType.Value),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.ForceUniqueProvider),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.UseAssetBundleCache),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.UseAssetBundleCrc),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.UseAssetBundleCrcForCachedBundles),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.UseUWRForLocalBundles),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, int>(x => x.Timeout),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.ChunkedTransfer),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, int>(x => x.RedirectLimit),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, int>(x => x.RetryCount),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, string>(x => x.BuildPath.Id, StringComparer.Ordinal),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, string>(x => x.LoadPath.Id, StringComparer.Ordinal),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, BundlePackingMode>(x => x.BundleMode),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, Type>(x => x.AssetBundleProviderType.Value),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, bool>(x => x.UseDefaultSchemaSettings),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, int>(x => x.SelectedPathPairIndex),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, BundleNamingStyle>(x => x.BundleNaming),
+            new PropertyComparerPair<BundledAssetGroupSchemaData, AssetLoadMode>(x => x.AssetLoadMode))
+        //*/
         {
         }
     }

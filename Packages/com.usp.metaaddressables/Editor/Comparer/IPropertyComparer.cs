@@ -5,6 +5,7 @@ using System.Reflection;
 
 namespace USP.MetaAddressables
 {
+    /*/
     /// <summary>
     /// An equality comparer used to compare two corresponding objects in a class hierarchy.
     /// </summary>
@@ -31,4 +32,5 @@ namespace USP.MetaAddressables
         IEnumerable<PropertyComparerPair<T, object>> TypedChildren { get; }
         #endregion
     }
+    //*/
 }

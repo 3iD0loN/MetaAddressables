@@ -3,7 +3,7 @@ namespace USP.MetaAddressables
     public class ContentUpdateGroupSchemaDataComparer : PropertyComparer<MetaAddressables.ContentUpdateGroupSchemaData>
     {
         public ContentUpdateGroupSchemaDataComparer() :
-            base((x => x.StaticContent, ObjectComparer.Default))
+            base(new PropertyComparerPair<MetaAddressables.ContentUpdateGroupSchemaData, bool>(x => x.StaticContent, ObjectComparer<bool>.Default))
         {
         }
     }

@@ -27,7 +27,7 @@ namespace USP.MetaAddressables
         #endregion
 
         #region Methods
-        public StringComparer(IEqualityComparer<string> comparer) :
+        private StringComparer(IEqualityComparer<string> comparer) :
             base(comparer)
         {
         }
