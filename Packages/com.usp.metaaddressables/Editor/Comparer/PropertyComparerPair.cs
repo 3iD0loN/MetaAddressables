@@ -43,6 +43,8 @@ namespace USP.MetaAddressables
         public readonly MemberExpression MemberExpression;
 
         public readonly MethodCallExpression MethodCallExpression;
+
+        private readonly Delegate @delegate;
         #endregion
 
         #region Methods
@@ -58,6 +60,8 @@ namespace USP.MetaAddressables
             {
                 MethodCallExpression = methodCallExpression;
             }
+
+            @delegate = PropertyExpression?.Compile();
         }
 
         public T GetMemberInfo<T>() where T : MemberInfo
@@ -93,8 +97,6 @@ namespace USP.MetaAddressables
 
         public virtual object Access(object value)
         {
-            var @delegate = PropertyExpression?.Compile();
-
             return @delegate?.DynamicInvoke(value);
         }
         #endregion
@@ -141,12 +143,15 @@ namespace USP.MetaAddressables
         public Expression<Func<T, U>> Expression => TypedPropertyExpression;
 
         public IPropertyComparer<T> TypedPropertyComparer => PropertyComparer as IPropertyComparer<T>;
+
+        private readonly Func<T, U> @delegate;
         #endregion
 
         #region Methods
         public PropertyComparerPair(Expression<Func<T, U>> item1, IPropertyComparer item2) :
             base(item1, item2)
         {
+            @delegate = Expression?.Compile();
         }
 
         public override object Access(object value)
@@ -156,8 +161,6 @@ namespace USP.MetaAddressables
 
         public virtual U Access(T value)
         {
-            Func<T, U> @delegate = Expression?.Compile();
-
             if (@delegate == null)
             {
                 return default;
