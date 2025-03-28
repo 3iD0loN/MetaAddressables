@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.AddressableAssets.Settings;
 
 namespace USP.MetaAddressables
 {

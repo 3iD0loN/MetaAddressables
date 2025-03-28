@@ -11,6 +11,12 @@ namespace USP.MetaAddressables
         public class CreationFactory : ICreationFactory
         {
             #region Properties
+            public AddressableAssetSettings Settings
+            {
+                get;
+                set;
+            }
+
             public AddressableAssetGroupTemplate ActiveGroupTemplate
             {
                 get;
@@ -24,8 +30,7 @@ namespace USP.MetaAddressables
                 // Get the asset GUID associated with the asset file path.
                 string guid = AssetDatabase.AssetPathToGUID(assetImporter.assetPath);
 
-                var settings = AddressableAssetSettingsDefaultObject.Settings;
-                if (settings == null)
+                if (Settings == null)
                 {
                     var assetData = new AssetData(guid, assetImporter.assetPath, null, false);
                     var groupData = new GroupData(ActiveGroupTemplate);
@@ -33,7 +38,7 @@ namespace USP.MetaAddressables
                     return new UserData(assetData, groupData);
                 }
                 
-                return UserData.Create(settings, guid);
+                return UserData.Create(Settings, guid);
             }
             #endregion
         }
