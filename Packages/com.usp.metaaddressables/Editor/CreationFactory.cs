@@ -30,15 +30,29 @@ namespace USP.MetaAddressables
                 // Get the asset GUID associated with the asset file path.
                 string guid = AssetDatabase.AssetPathToGUID(assetImporter.assetPath);
 
-                if (Settings == null)
+                // If the Addressables settings are valid, then:
+                if (Settings != null)
                 {
-                    var assetData = new AssetData(guid, assetImporter.assetPath, null, false);
-                    var groupData = new GroupData(ActiveGroupTemplate);
+                    // Attempt to create data off of an existing entry in Addressables.
+                    var result = UserData.Create(Settings, guid);
 
-                    return new UserData(assetData, groupData);
+                    // If the result is valid, then it already exists as an entry in the Addressables system.
+                    // If there already is an entry in the Addressables system, then::
+                    if (result != null)
+                    {
+                        // Use that entry and do nothing else.
+                        return result;
+                    }    
+
+                    // Otherwise, there is no entry in the Addressables system.
                 }
-                
-                return UserData.Create(Settings, guid);
+
+                // Either the settings wwere invalid, or there is no entry in the Addressables system. Make one. 
+
+                var assetData = new AssetData(guid, assetImporter.assetPath, null, false);
+                var groupData = new GroupData(ActiveGroupTemplate);
+
+                return new UserData(assetData, groupData);
             }
             #endregion
         }
