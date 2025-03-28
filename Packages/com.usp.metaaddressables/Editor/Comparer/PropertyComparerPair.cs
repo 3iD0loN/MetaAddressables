@@ -44,7 +44,7 @@ namespace USP.MetaAddressables
 
         public readonly MethodCallExpression MethodCallExpression;
 
-        private readonly Delegate @delegate;
+        public readonly Delegate Accessor;
         #endregion
 
         #region Methods
@@ -61,7 +61,7 @@ namespace USP.MetaAddressables
                 MethodCallExpression = methodCallExpression;
             }
 
-            @delegate = PropertyExpression?.Compile();
+            Accessor = PropertyExpression?.Compile();
         }
 
         public T GetMemberInfo<T>() where T : MemberInfo
@@ -97,7 +97,7 @@ namespace USP.MetaAddressables
 
         public virtual object Access(object value)
         {
-            return @delegate?.DynamicInvoke(value);
+            return Accessor?.DynamicInvoke(value);
         }
         #endregion
     }
