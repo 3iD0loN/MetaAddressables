@@ -15,7 +15,7 @@ namespace USP.MetaAddressables
             #region Static Methods
             public static ContentUpdateGroupSchema Create(ContentUpdateGroupSchemaData contentUpdateGroupSchema)
             {
-                var result = new ContentUpdateGroupSchema();
+                var result = ScriptableObject.CreateInstance<ContentUpdateGroupSchema>();
                 result.StaticContent = contentUpdateGroupSchema.StaticContent;
 
                 return result;

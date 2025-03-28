@@ -27,7 +27,7 @@ namespace USP.MetaAddressables
                     return null;
                 }
 
-                var result = new BundledAssetGroupSchema();
+                var result = ScriptableObject.CreateInstance<BundledAssetGroupSchema>();
 
                 result.InternalBundleIdMode = bundledAssetGroupScema.InternalBundleIdMode;
                 result.Compression = bundledAssetGroupScema.Compression;
