@@ -27,7 +27,7 @@ namespace USP.MetaAddressables
             }
 
             public static AddressableAssetEntry CreateOrMove(AddressableAssetSettings settings, string guid,
-                AddressableAssetGroup group, string address = null, HashSet<string> labels = null)
+                AddressableAssetGroup group, string address = null, ISet<string> labels = null)
             {
                 if (settings == null)
                 {
@@ -36,13 +36,17 @@ namespace USP.MetaAddressables
 
                 AddressableAssetEntry entry = settings.CreateOrMoveEntry(guid, group);
 
+                // If there is a valid address, then:
                 if (address != null)
                 {
+                    // Replace the Addressables entry's address with the new address.
                     entry.SetAddress(address);
                 }
 
+                // If there are valid and non-empty labels, then:
                 if (labels != null || labels.Count != 0)
                 {
+                    // Replace the current set of labels and add them to the set. 
                     entry.labels.Clear();
                     entry.labels.UnionWith(labels);
                 }
@@ -101,7 +105,7 @@ namespace USP.MetaAddressables
                 }
             }
 
-            public HashSet<string> Labels
+            public SortedSet<string> Labels
             {
                 get;
                 private set;
@@ -123,14 +127,14 @@ namespace USP.MetaAddressables
             {
             }
             
-            public AssetData(string guid, string address, HashSet<string> labels, bool readOnly)
+            public AssetData(string guid, string address, ISet<string> labels, bool readOnly)
             {
                 _guid = guid;
 
                 _address = address;
 
                 _labels = new string[0];
-                Labels = labels ?? new HashSet<string>();
+                Labels = labels != null ? new SortedSet<string>(labels) : new SortedSet<string>();
 
                 _readOnly = readOnly;
             }
@@ -146,7 +150,7 @@ namespace USP.MetaAddressables
 
             void ISerializationCallbackReceiver.OnAfterDeserialize()
             {
-                Labels = new HashSet<string>(_labels);
+                Labels = new SortedSet<string>(_labels);
             }
             #endregion
             #endregion
