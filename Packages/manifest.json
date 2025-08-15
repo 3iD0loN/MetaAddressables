@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.unity.addressables": "2.2.2",
     "com.unity.ai.navigation": "2.0.4",
     "com.unity.collab-proxy": "2.6.0",
@@ -11,8 +10,11 @@
     "com.unity.render-pipelines.universal": "17.0.3",
     "com.unity.test-framework": "1.4.5",
     "com.unity.timeline": "1.8.7",
+    "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.10",
     "com.unity.ugui": "2.0.0",
     "com.unity.visualscripting": "1.9.4",
+    "com.usp.comparers": "https://github.com/3iD0loN/Comparers.git?path=/Packages/com.usp.comparers",
+    "com.usp.addressablesmemento": "https://github.com/3iD0loN/AddressablesMemento.git?path=/Packages/com.usp.addressablesmemento",
     "com.usp.metafileextension": "https://github.com/3iD0loN/MetaFileExtension.git?path=/Packages/com.usp.metafileextension",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.ai": "1.0.0",

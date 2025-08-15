@@ -1,11 +1,12 @@
 {
     "name": "MetaAddressables",
-    "rootNamespace": "",
+    "rootNamespace": "USP.MetaAddressables",
     "references": [
         "GUID:84651a3751eca9349aac36a66bba901b",
         "GUID:9e24947de15b9834991c9d8411ea37cf",
         "GUID:69448af7b92c7f342b298e06a37122aa",
-        "GUID:9515f379d48dffc4cb6ac245d0b09811"
+        "GUID:9515f379d48dffc4cb6ac245d0b09811",
+        "GUID:22b8aa77715c09743a0dfe6d6d73bbec"
     ],
     "includePlatforms": [
         "Editor"

@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 
+using USP.AddressablesMemento;
 using USP.MetaFileExtension;
 
 namespace USP.MetaAddressables

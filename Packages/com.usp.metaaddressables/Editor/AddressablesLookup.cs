@@ -8,7 +8,7 @@ using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
 using USP.MetaFileExtension;
-using static USP.MetaAddressables.MetaAddressables;
+using USP.AddressablesMemento;
 
 namespace USP.MetaAddressables
 {
@@ -53,7 +53,7 @@ namespace USP.MetaAddressables
             }
 
             // Pack the group into a group data...
-            var groupData = new MetaAddressables.GroupData(group);
+            var groupData = new GroupData(group);
 
             // so that we can generate a hash that is unique to its properties.
             int hash = groupData.GetHashCode();

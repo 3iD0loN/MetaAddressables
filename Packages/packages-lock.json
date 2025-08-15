@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.github-glitchenzo.nugetforunity": {
-      "version": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "46e771daa4b2b00db9bd7356ab3c8874c9d83cb4"
-    },
     "com.unity.addressables": {
       "version": "2.2.2",
       "depth": 0,
@@ -189,6 +182,22 @@
         "com.unity.searcher": "4.9.2"
       }
     },
+    "com.unity.sysroot": {
+      "version": "2.0.10",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.sysroot.linux-x86_64": {
+      "version": "2.0.9",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "2.0.10"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.test-framework": {
       "version": "1.4.5",
       "depth": 0,
@@ -222,6 +231,16 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.toolchain.win-x86_64-linux-x86_64": {
+      "version": "2.0.10",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "2.0.10",
+        "com.unity.sysroot.linux-x86_64": "2.0.9"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.ugui": {
       "version": "2.0.0",
       "depth": 0,
@@ -240,6 +259,23 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "com.usp.addressablesmemento": {
+      "version": "https://github.com/3iD0loN/AddressablesMemento.git?path=/Packages/com.usp.addressablesmemento",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.addressables": "2.2.2",
+        "com.usp.comparers": "0.0.1"
+      },
+      "hash": "b7419739650172204d5edc2ff9b1048807ef5a16"
+    },
+    "com.usp.comparers": {
+      "version": "https://github.com/3iD0loN/Comparers.git?path=/Packages/com.usp.comparers",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b238b3c9543304d56bbb24eaf4f9d621043c04e6"
     },
     "com.usp.metaaddressables": {
       "version": "file:com.usp.metaaddressables",

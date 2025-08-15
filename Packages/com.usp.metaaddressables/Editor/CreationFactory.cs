@@ -2,6 +2,8 @@ using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 
+using USP.AddressablesMemento;
+
 namespace USP.MetaAddressables
 {
 
